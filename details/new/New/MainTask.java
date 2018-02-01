@@ -20,9 +20,9 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,7 +34,6 @@ import com.project.avanikan_pc_003.taskslist.Data.Tasks;
 import com.project.avanikan_pc_003.taskslist.DataBase.DataBaseOperation;
 import com.project.avanikan_pc_003.taskslist.western.Custom_dialog;
 import com.project.avanikan_pc_003.taskslist.western.News.TypefaceSpan;
-
 
 import java.util.ArrayList;
 

@@ -60,7 +60,6 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
     }
 
-
     @Override
     public Recycler_viewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view  = LayoutInflater.from(parent.getContext()).inflate(R.layout.active_user_recycler_content  , parent , false);
@@ -89,8 +88,8 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
         if (user.isRunning){
 
-            holder1.start_stop.setText("stop");
-            holder1.start_stop.setTextColor(Color.parseColor("#d50000"));
+            holder1.start_pause.setText("stop");
+            holder1.start_pause.setTextColor(Color.parseColor("#d50000"));
             holder1.start_flag = true ;
 
             holder1.time = user.Remaining_Time;
@@ -138,7 +137,6 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
         adapter.notifyItemRangeChanged(position , dataList.size());
     }
 
-
     @Override
     public int getItemCount() {
         return dataList.size() ;
@@ -176,7 +174,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
        TextView tx_Name,tx_LastName , tx_leftTime , tx_startTime , tx_endTime  , tx_money , tx_numJoystick ;
         ProgressBar progressBar ;
         ImageView drop_down ;
-        Button start_stop ;
+        Button start_pause , stop ;
         ImageView delete ;
 
 
@@ -225,7 +223,8 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
             drop_down = (ImageView) itemView.findViewById(R.id.drop_down_btn_active_users);
 
-            start_stop = (Button) itemView.findViewById(R.id.btn_start_stop_user);
+            start_pause = (Button) itemView.findViewById(R.id.btn_start_pause_user);
+            stop = itemView.findViewById(R.id.btn_stop_user);
             delete = (ImageView) itemView.findViewById(R.id.btn_delete_active_user);
 
             mySnackbar = Snackbar.make(view ,"Task Deleted ..." , Snackbar.LENGTH_LONG );
@@ -235,7 +234,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
 
             drop_down.setOnClickListener(this);
-            start_stop.setOnClickListener(this);
+            start_pause.setOnClickListener(this);
             delete.setOnClickListener(this);
 
 
@@ -306,82 +305,25 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
                     break;
 
 
-                case R.id.btn_start_stop_user :
+                case R.id.btn_start_pause_user:
 
                     Log.i(TAG, "onClick: " + getLayoutPosition());
 
                     if (!start_flag){
-                        start_stop.setText("stop");
-                        start_stop.setTextColor(Color.parseColor("#d50000"));
-                        start_flag = true ;
 
-                        time = list.get(getLayoutPosition()).Remaining_Time;
-
-                        Intent service = new Intent(context , TimerService.class);
-                        service.putExtra("id" , list.get(getLayoutPosition()).Username_id) ;
-                        service.putExtra("mode" , 0 ) ;
-                        context.startService(service);
-
-                        animator.setDuration(time*60*1000);
-                        animator.setCurrentPlayTime(list.get(getLayoutPosition()).Elapsed_time);
-                        animator.setInterpolator(new LinearInterpolator());
-
-                        timer =  new ExampleTimer(1000 , time*60*1000) {
-                            long leftTime = time *60 ;
-                            @Override
-                            protected void onTick() {
-                                tx_leftTime.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        tx_leftTime.setText(String.valueOf(leftTime--));
-                                    }
-                                });
-                            }
-
-                            @Override
-                            protected void onFinish() {
-                                tx_leftTime.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        tx_leftTime.setText("Finished ...");
-                                    }
-                                });
-                            }
-                        };
-
-
-                        animator.start();
-                        timer.start();
+                            start_begin();
+                            start_flag = true ;
 
 
                     }else if (start_flag && !pause_flag){
-                        start_stop.setText("resume");
-                        start_stop.setTextColor(Color.parseColor("#64dd17"));
+
+                        pause();
                         pause_flag = true ;
-
-                        Intent service = new Intent(context , TimerService.class);
-                        service.putExtra("mode" , 1) ;
-                        service.putExtra("tag_id" , list.get(getLayoutPosition()).Tag_Num) ;
-                        context.startService(service);
-
-                        animator.pause();
-                        timer.pause();
-
-
 
                     }else if (pause_flag){
 
-                        start_stop.setText("stop");
-                        start_stop.setTextColor(Color.parseColor("#d50000"));
+                        resume();
                         pause_flag = false ;
-
-                        Intent service = new Intent(context , TimerService.class);
-                        service.putExtra("mode" , 2) ;
-                        service.putExtra("tag_id" , list.get(getLayoutPosition()).Tag_Num) ;
-                        context.startService(service);
-
-                        animator.resume();
-                        timer.resume();
 
 
                      }
@@ -390,6 +332,84 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
             }
         }
+
+        private void start_begin (){
+
+            start_pause.setText("pause");
+            start_pause.setTextColor(Color.parseColor("#d50000"));
+
+
+            time = list.get(getLayoutPosition()).Remaining_Time;
+
+            Intent service = new Intent(context , TimerService.class);
+            service.putExtra("id" , list.get(getLayoutPosition()).Username_id) ;
+            service.putExtra("mode" , 0 ) ;
+            context.startService(service);
+
+            animator.setDuration(time*60*1000);
+            animator.setCurrentPlayTime(list.get(getLayoutPosition()).Elapsed_time);
+            animator.setInterpolator(new LinearInterpolator());
+
+            timer =  new ExampleTimer(1000 , time*60*1000) {
+                long leftTime = time *60 ;
+                @Override
+                protected void onTick() {
+                    tx_leftTime.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tx_leftTime.setText(String.valueOf(leftTime--));
+                        }
+                    });
+                }
+
+                @Override
+                protected void onFinish() {
+                    tx_leftTime.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tx_leftTime.setText("Finished ...");
+                        }
+                    });
+                }
+            };
+
+
+            animator.start();
+            timer.start();
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        private void pause(){
+            start_pause.setText("resume");
+            start_pause.setTextColor(Color.parseColor("#64dd17"));
+            stop.setVisibility(View.VISIBLE);
+
+            Intent service = new Intent(context , TimerService.class);
+            service.putExtra("mode" , 1) ;
+            Log.i(TAG, "pause: " + list.get(getLayoutPosition()).Tag_Num);
+            //service.putExtra("tag_id" , list.get(getLayoutPosition()).Tag_Num) ;
+            context.startService(service);
+
+            animator.pause();
+            timer.pause();
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        private void resume(){
+            start_pause.setText("pause");
+            start_pause.setTextColor(Color.parseColor("#d50000"));
+            stop.setVisibility(View.INVISIBLE);
+
+            Intent service = new Intent(context , TimerService.class);
+            service.putExtra("mode" , 2) ;
+            service.putExtra("tag_id" , list.get(getLayoutPosition()).Tag_Num) ;
+            context.startService(service);
+
+            animator.resume();
+            timer.resume();
+        }
+
+        private void stop (){}
 
 
 

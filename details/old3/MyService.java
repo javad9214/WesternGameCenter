@@ -4,12 +4,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.IBinder;
-import android.support.annotation.IntDef;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.project.avanikan_pc_003.taskslist.DataBase.DataBaseOperation;
 
 public class MyService extends Service {
 

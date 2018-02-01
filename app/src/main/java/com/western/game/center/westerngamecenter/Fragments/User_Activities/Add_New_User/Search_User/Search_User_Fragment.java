@@ -13,6 +13,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.internal.view.SupportMenuItem;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -297,21 +298,41 @@ public class Search_User_Fragment extends Fragment {
 
             inflater.inflate(R.menu.option_menu , menu);
             MenuItem searchItem = menu.findItem(R.id.search);
+            SupportMenuItem supportMenuItem = (SupportMenuItem) menu.findItem(R.id.search);
 
-            MenuItemCompat.setOnActionExpandListener(searchItem , new MenuItemCompat.OnActionExpandListener() {
+            supportMenuItem.setSupportOnActionExpandListener(new MenuItem.OnActionExpandListener() {
                 @Override
-                public boolean onMenuItemActionExpand(MenuItem item) {
-                    Log.i(TAG, "onMenuItemActionExpand: ");
+                public boolean onMenuItemActionExpand(MenuItem menuItem) {
                     return true;
                 }
 
                 @Override
-                public boolean onMenuItemActionCollapse(MenuItem item) {
-                    Log.i(TAG, "onMenuItemActionCollapse: ");
+                public boolean onMenuItemActionCollapse(MenuItem menuItem) {
                     show_all_users();
                     return true;
                 }
             });
+
+//            MenuItemCompat.setOnActionExpandListener(searchItem , new MenuItemCompat.OnActionExpandListener() {
+//                @Override
+//                public boolean onMenuItemActionExpand(MenuItem item) {
+//                    Log.i(TAG, "onMenuItemActionExpand: ");
+//                    return true;
+//                }
+//
+//                @Override
+//                public boolean onMenuItemActionCollapse(MenuItem item) {
+//                    Log.i(TAG, "onMenuItemActionCollapse: ");
+//                    show_all_users();
+//                    return true;
+//                }
+//            });
+
+
+
+
+
+
 
 
 

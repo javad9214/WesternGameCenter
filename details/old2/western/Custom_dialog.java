@@ -1,15 +1,11 @@
 package com.project.avanikan_pc_003.taskslist.western;
 
 import android.annotation.TargetApi;
-import android.support.v4.app.DialogFragment;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerTitleStrip;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;

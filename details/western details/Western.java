@@ -2,15 +2,11 @@ package com.project.avanikan_pc_003.login.western;
 
 import android.animation.ObjectAnimator;
 import android.os.AsyncTask;
-import android.os.CountDownTimer;
+import android.os.Bundle;
 import android.support.constraint.solver.widgets.Animator;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.util.Property;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ProgressBar;
