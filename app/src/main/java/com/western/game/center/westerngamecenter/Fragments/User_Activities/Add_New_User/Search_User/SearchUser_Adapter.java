@@ -67,7 +67,6 @@ public class SearchUser_Adapter  extends RecyclerView.Adapter<SearchUser_Adapter
         SearchUser_viewHolder holder1 = (SearchUser_viewHolder) holder ;
         this.holder2 = holder1;
         this.user = dataList.get(position);
-        holder1.tx_username.setText(String.valueOf(user.UserName));
         holder1.tx_password.setText(String.valueOf(user.LastName));
         holder1.tx_name.setText(user.Name);
         holder1.tx_phone.setText("+98" + " " + String.valueOf(user.Phone));

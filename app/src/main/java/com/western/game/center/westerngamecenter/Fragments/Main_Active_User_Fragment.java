@@ -176,7 +176,6 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
         return super.onOptionsItemSelected(item);
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -199,7 +198,6 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
             return true;
         }
     }
-
 
     private void showAchievement() {
         AchievementUnlocked test = new AchievementUnlocked(getContext()).setReadingDelay(2000).setDismissible(false);

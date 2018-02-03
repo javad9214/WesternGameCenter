@@ -30,7 +30,6 @@ public class DataBase_Operation implements DataBase_DAO{
     public long addUser(User user) {
 
         ContentValues values = new ContentValues();
-        values.put(DB_Constants.UsersInfoTable.USERNAME , user.UserName);
         values.put(DB_Constants.UsersInfoTable.Last_Name , user.LastName);
         values.put(DB_Constants.UsersInfoTable.ToTAL_MONEY , user.TotalMoney);
         values.put(DB_Constants.UsersInfoTable.LEFT_MONEY , user.LeftMoney);
@@ -51,8 +50,8 @@ public class DataBase_Operation implements DataBase_DAO{
         User user1 = new User();
         String selections ;
         Cursor cursor ;
-        selections = DB_Constants.UsersInfoTable.USERNAME + " like ?";
-        String[] selectionArgs = {"%" + user.UserName + "%"};
+        selections = DB_Constants.UsersInfoTable.USER_UID + " like ?";
+        String[] selectionArgs = {"%" + user.UID + "%"};
         cursor = db_user.query(DB_Constants.UsersInfoTable.USER_TABLE_NAME , null , selections , selectionArgs , null , null ,null);
         cursor.moveToFirst();
         while (true) {
@@ -70,9 +69,6 @@ public class DataBase_Operation implements DataBase_DAO{
 
         switch (UpdateMode){
 
-            case 0 : // User Name
-                values.put(DB_Constants.UsersInfoTable.USERNAME , user.UserName);
-                break;
 
             case 1 : // Password
                 values.put(DB_Constants.UsersInfoTable.Last_Name, user.LastName);
@@ -127,8 +123,8 @@ public class DataBase_Operation implements DataBase_DAO{
 
             case 0 : // search by username
                 Log.i(TAG, "Search_User: username");
-                selections = DB_Constants.UsersInfoTable.USERNAME + " like ?";
-                String[] selectionArgs = {"%" + user.UserName + "%"};
+                selections = DB_Constants.UsersInfoTable.USER_UID + " like ?";
+                String[] selectionArgs = {"%" + user.UID + "%"};
                 cursor = db_user.query(DB_Constants.UsersInfoTable.USER_TABLE_NAME , null , selections , selectionArgs , null , null ,null);
                 if (cursor.getCount() == 0 ){
                     user1.Name = "NO User Found" ;
@@ -136,7 +132,6 @@ public class DataBase_Operation implements DataBase_DAO{
                     cursor.moveToFirst();
                     while (true) {
                         user1.UID = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USER_UID));
-                        user1.UserName = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USERNAME));
                         user1.LastName = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.Last_Name));
                         user1.Phone = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
                         user1.TotalMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.ToTAL_MONEY));
@@ -167,7 +162,6 @@ public class DataBase_Operation implements DataBase_DAO{
                     cursor.moveToFirst();
                     while (true){
                         user1.UID = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USER_UID));
-                        user1.UserName = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USERNAME));
                         user1.LastName = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.Last_Name));
                         user1.Phone = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
                         user1.TotalMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.ToTAL_MONEY));
@@ -205,7 +199,6 @@ public class DataBase_Operation implements DataBase_DAO{
         cursor.moveToFirst();
         while (true) {
             user1.UID = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USER_UID));
-            user1.UserName = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USERNAME));
             user1.LastName = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.Last_Name));
             user1.Phone = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
             user1.TotalMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.ToTAL_MONEY));
@@ -248,7 +241,6 @@ public class DataBase_Operation implements DataBase_DAO{
             while (true) {
                 user1 = new User();
                 user1.UID = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USER_UID));
-                user1.UserName = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USERNAME));
                 user1.LastName = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.Last_Name));
                 user1.Phone = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
                 user1.TotalMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.ToTAL_MONEY));
@@ -457,7 +449,6 @@ public class DataBase_Operation implements DataBase_DAO{
                 user.LeftMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.LEFT_MONEY));
                 user.TotalMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.ToTAL_MONEY));
                 user.Date = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.DATE));
-                user.UserName = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USERNAME));
                 user.Phone = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
                 user.UID = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USER_UID));
                 user.LastName = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.Last_Name));
