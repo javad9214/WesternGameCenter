@@ -7,9 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
@@ -17,7 +18,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -35,24 +35,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
+import com.geniusforapp.achievementunlocked.AchievementUnlocked;
+import com.geniusforapp.achievementunlocked.entity.AchievementData;
+import com.geniusforapp.achievementunlocked.viewes.AchievementIconView;
 import com.western.game.center.westerngamecenter.ActiveUsers.ActiveUsers_Recycler_Adapter;
 import com.western.game.center.westerngamecenter.App;
 import com.western.game.center.westerngamecenter.DataBase.DataBase_Operation;
-import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Add_new_User.Add_New_User_Fragment;
 import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Add_new_User.Add_user_dialog;
 import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Search_User.Search_User_Fragment;
 import com.western.game.center.westerngamecenter.R;
-import com.western.game.center.westerngamecenter.Service.TimerService;
 import com.western.game.center.westerngamecenter.Tools.TypefaceSpan;
 import com.western.game.center.westerngamecenter.User_Constant.ActiveUser;
 
 import java.util.ArrayList;
 
 
-public class Main_Active_User_Fragment extends Fragment implements NavigationView.OnNavigationItemSelectedListener , View.OnClickListener , RadioGroup.OnCheckedChangeListener{
+public class Main_Active_User_Fragment extends Fragment implements  View.OnClickListener , RadioGroup.OnCheckedChangeListener{
 
 
     public static final String TAG = "===>" ;
@@ -65,7 +67,8 @@ public class Main_Active_User_Fragment extends Fragment implements NavigationVie
     NavigationView navigationView ;
     Context context ;
 
-    View view1  , view2 ;
+    View view1  , view2  ;
+    Animation a1 , a2 , a3 ;
 
     ArrayList<ActiveUser> list  = new ArrayList<>();
     ActiveUsers_Recycler_Adapter adapter ;
@@ -73,7 +76,7 @@ public class Main_Active_User_Fragment extends Fragment implements NavigationVie
 
     LinearLayout  linearLayout_main_page_empty ;
 
-    Add_New_User_Fragment add_new_user_fragment ;
+
 
     private static final String Flag = "param7";
 
@@ -107,6 +110,7 @@ public class Main_Active_User_Fragment extends Fragment implements NavigationVie
         final View view = inflater.inflate(R.layout.fragment_main__active__user_, container, false);
 
         this.view2 = view ;
+        checkDrawOverlayPermission();
         init(view);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         //navigationView.setNavigationItemSelectedListener(this);
@@ -147,6 +151,7 @@ public class Main_Active_User_Fragment extends Fragment implements NavigationVie
         inflater.inflate(R.menu.main , menu);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -161,10 +166,50 @@ public class Main_Active_User_Fragment extends Fragment implements NavigationVie
                 break;
 
             case R.id.action_settings :
+
+
+                showAchievement();
+
                 break;
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == 100) {
+//            if (Settings.canDrawOverlays(getContext())) {
+//                showAchievement();
+//            }
+//        }
+    }
+
+    public boolean checkDrawOverlayPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (!Settings.canDrawOverlays(getContext())) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getActivity().getPackageName()));
+            startActivityForResult(intent, 100);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    private void showAchievement() {
+        AchievementUnlocked test = new AchievementUnlocked(getContext()).setReadingDelay(2000).setDismissible(false);
+        AchievementData achievementData = new AchievementData();
+        achievementData.setTitle("     New User Saved Successfully");
+        achievementData.setState(AchievementIconView.AchievementIconViewStates.FADE_DRAWABLE);
+        achievementData.setBackgroundColor(Color.parseColor("#ffffff"));
+        achievementData.setIcon(getResources().getDrawable(R.drawable.ic_logo_western));
+        achievementData.setTextColor(getResources().getColor(android.R.color.black));
+        test.show(achievementData);
     }
 
     public void setActive (){
@@ -259,31 +304,6 @@ public class Main_Active_User_Fragment extends Fragment implements NavigationVie
                 }
             }
         });
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-
-            case R.id.nav_Add_New_User :
-                add_new_user_fragment = (Add_New_User_Fragment) getActivity().getSupportFragmentManager().findFragmentByTag("add_new_user_fragment");
-
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction() ;
-                fragmentTransaction.replace(R.id.placeholder , new Add_New_User_Fragment() , "add_new_user_fragment");
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-                break;
-
-            case R.id.nav_gallery :
-                Intent intent = new Intent(getActivity(), TimerService.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                getActivity().startService(intent);
-                break;
-        }
-
-
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     public void init(View view){

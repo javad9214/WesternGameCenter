@@ -470,4 +470,6 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
 
         return false;
     }
+
+
 }

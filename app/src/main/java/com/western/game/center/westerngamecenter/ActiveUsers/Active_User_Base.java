@@ -12,7 +12,6 @@ import android.widget.RadioGroup;
 import com.western.game.center.westerngamecenter.App;
 import com.western.game.center.westerngamecenter.DataBase.DataBase_Operation;
 import com.western.game.center.westerngamecenter.Fragments.Main_Active_User_Fragment;
-import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Add_new_User.Add_New_User_Fragment;
 import com.western.game.center.westerngamecenter.R;
 import com.western.game.center.westerngamecenter.User_Constant.ActiveUser;
 
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 public class Active_User_Base extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
 
     Main_Active_User_Fragment main_active_user_fragment ;
-    Add_New_User_Fragment add_new_user_fragment ;
+
 
     ArrayList<ActiveUser> list ;
     ActiveUser activeUser ;
@@ -44,7 +43,7 @@ public class Active_User_Base extends AppCompatActivity implements RadioGroup.On
 
     public void attachFragment(){
         main_active_user_fragment = (Main_Active_User_Fragment) getSupportFragmentManager().findFragmentByTag("main_active_user_fragment");
-        add_new_user_fragment = (Add_New_User_Fragment) getSupportFragmentManager().findFragmentByTag("add_new_user_fragment");
+
 
         list = new ArrayList<>();
         activeUser = new ActiveUser();
