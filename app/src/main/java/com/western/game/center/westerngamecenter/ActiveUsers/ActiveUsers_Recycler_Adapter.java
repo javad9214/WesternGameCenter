@@ -88,7 +88,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
         if (user.isRunning){
 
-            holder1.start_pause.setText("stop");
+            holder1.start_pause.setText("Pause");
             holder1.start_pause.setTextColor(Color.parseColor("#d50000"));
             holder1.start_flag = true ;
 
@@ -298,6 +298,9 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
                         mySnackbar.show();
                         DataBase_Operation db = App.getDataBaseOperation();
                         db.Delete_ActiveUser(list.get(getLayoutPosition()));
+                        list.get(getLayoutPosition()).isRunning = false ;
+                        db.Update_Active_User(list.get(getLayoutPosition()) , 2);
+
 
                     }
 
@@ -387,7 +390,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
             Intent service = new Intent(context , TimerService.class);
             service.putExtra("mode" , 1) ;
             Log.i(TAG, "pause: " + list.get(getLayoutPosition()).Tag_Num);
-            //service.putExtra("tag_id" , list.get(getLayoutPosition()).Tag_Num) ;
+            service.putExtra("id" , list.get(getLayoutPosition()).Username_id) ;
             context.startService(service);
 
             animator.pause();
@@ -402,7 +405,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
             Intent service = new Intent(context , TimerService.class);
             service.putExtra("mode" , 2) ;
-            service.putExtra("tag_id" , list.get(getLayoutPosition()).Tag_Num) ;
+            service.putExtra("id" , list.get(getLayoutPosition()).Username_id) ;
             context.startService(service);
 
             animator.resume();

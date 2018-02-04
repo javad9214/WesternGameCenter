@@ -18,7 +18,7 @@ import com.western.game.center.westerngamecenter.User_Constant.ActiveUser;
 public class TimerService extends Service {
 
 
-    public static final String TAG = "===>";
+    public static final String TAG = "===/===>";
 
     private BroadcastReceiver receiver ;
 
@@ -42,10 +42,11 @@ public class TimerService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        timer = new Timer[20] ;
+        timer = new Timer[40] ;
         tag_id = -1 ;
         db = App.getDataBaseOperation();
 
+        Log.i(TAG, "onCreate: service");
         receive();
 
     }
@@ -59,46 +60,24 @@ public class TimerService extends Service {
 
             case 0 : // start new one
 
-                tag_id++ ;
                 activeUser = new ActiveUser();
-                activeUser = db.Search_ActiveUser(intent.getIntExtra("id" , 0 ));
-                if (activeUser == null) {
-                    Log.i(TAG, "onStartCommand: nuuulllll");
-                    tag_id -- ;
-                }else {
-                    activeUser.isRunning = true ;
-                    db.Update_Active_User(activeUser , 2);
-                    activeUser.Tag_Num = tag_id ;
-                    db.Update_Active_User(activeUser , 3);
-                    timer[tag_id] = new ExampleTimer(1000, activeUser.Remaining_Time*60*1000) {
-                        @Override
-                        protected void onTick() {
-                            super.onTick();
+                activeUser = db.Search_ActiveUser(intent.getIntExtra("id" , 0 ) , 1);
+                start_new_active(activeUser);
 
-                            Log.i(TAG, "onTick:  "  + tag_id + "  " + timer[tag_id].isRunning() + "   " + timer[tag_id].getElapsedTime() + "  " + timer[tag_id].getRemainingTime());
-
-                        }
-
-                        @Override
-                        protected void onFinish() {
-                            super.onFinish();
-                            Log.i(TAG, "onFinish: " );
-                            activeUser.isRunning = false ;
-                            db.Update_Active_User(activeUser , 2);
-
-                        }
-                    };
-                    timer[tag_id].start();
-
-                }
                 break;
 
             case 1 : // pause
-                onPause(intent.getIntExtra("tag_id" , 0));
+
+                activeUser = new ActiveUser();
+                activeUser = db.Search_ActiveUser(intent.getIntExtra("id" , 0 ) , 1);
+                onPause(activeUser.Tag_Num);
                 break;
 
             case 2 : // resume
-                onResume(intent.getIntExtra("tag_id" , 0));
+
+                activeUser = new ActiveUser();
+                activeUser = db.Search_ActiveUser(intent.getIntExtra("id" , 0 ) , 1);
+                onResume(activeUser.Tag_Num);
                 break;
 
 
@@ -113,7 +92,44 @@ public class TimerService extends Service {
         return START_STICKY;
     }
 
+    private void start_new_active (final ActiveUser activeUser){
+
+        tag_id++ ;
+        Log.i(TAG, "start_new_active: " + tag_id + " id : " + activeUser.Username_id + "  UID  : " + activeUser.active_UID);
+        if (activeUser == null) {
+            Log.i(TAG, "onStartCommand: nuuulllll");
+            tag_id -- ;
+        }else {
+
+            activeUser.isRunning = true ;
+            db.Update_Active_User(activeUser , 2);
+            activeUser.Tag_Num = tag_id ;
+            db.Update_Active_User(activeUser , 3);
+            timer[tag_id] = new ExampleTimer(1000, activeUser.Remaining_Time*60*1000) {
+                @Override
+                protected void onTick() {
+                    super.onTick();
+
+                    Log.i(TAG, "onTick:  "  + tag_id + "  " + timer[tag_id].isRunning() + "   " + timer[tag_id].getElapsedTime() + "  " + timer[tag_id].getRemainingTime());
+
+                }
+
+                @Override
+                protected void onFinish() {
+                    super.onFinish();
+                    Log.i(TAG, "onFinish: " );
+                    activeUser.isRunning = false ;
+                    db.Update_Active_User(activeUser , 2);
+
+                }
+            };
+            timer[tag_id].start();
+
+        }
+    }
+
     public void onPause (int tagId){
+        Log.i(TAG, "onPause:  "  + tag_id + "  " + timer[tag_id].isRunning() + "   " + timer[tag_id].getElapsedTime() + "  " + timer[tag_id].getRemainingTime());
             timer[tagId].pause();
         }
 
@@ -127,13 +143,15 @@ public class TimerService extends Service {
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                    for (int j = 0; j <= tag_id; j ++  ){
-                         Log.i(TAG, "onReceive:remaining  " + timer[j].getRemainingTime());
+                    for (int j = 0; j <= tag_id ; j ++  ){
+                         activeUser = new ActiveUser();
+                         activeUser = db.Search_ActiveUser(j , 0);
                          activeUser.Remaining_Time = timer[j].getRemainingTime() ;
+                        Log.i(TAG, "onReceive: " + timer[j].getRemainingTime());
                          db.Update_Active_User(activeUser , 0 ) ;
                          activeUser.Elapsed_time  = timer[j].getElapsedTime();
-                        Log.i(TAG, "onReceive: " + timer[j].getElapsedTime());
                          db.Update_Active_User(activeUser , 1) ;
+
                     }
 
 

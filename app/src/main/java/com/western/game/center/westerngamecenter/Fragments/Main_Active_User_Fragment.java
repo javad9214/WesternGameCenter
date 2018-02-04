@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -214,42 +216,24 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
         DataBase_Operation db = App.getDataBaseOperation();
         list = db.Show_Active_user();
 
-        Log.i(TAG, "setActive: " + list.get(0).isRunning);
-
-
-
         if (list.get(0).null_flag){
+
             linearLayout_main_page_empty.setVisibility(View.VISIBLE);
+
         }else if (list.get(0).isRunning){
-            Log.i(TAG, "setActive: is running ");
+
+            Log.i(TAG, "setActive:  username :" + list.get(0).Username_id + "  tag num :"  + list.get(0).Tag_Num);
             Ask_time();
+
         }else {
 
-            linearLayout_main_page_empty.setVisibility(View.INVISIBLE);
-            adapter = new ActiveUsers_Recycler_Adapter(list, getContext(), view1, getActivity());
-
-            recyclerView.setAdapter(adapter);
-            GridLayoutManager manager = new GridLayoutManager(getContext(), 1);
-            manager.setOrientation(LinearLayoutManager.VERTICAL);
-            recyclerView.setLayoutManager(manager);
-
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    if (dy > 0 && fab.getVisibility() == View.VISIBLE) {
-                        fab.hide();
-                    } else if (dy < 0 && fab.getVisibility() != View.VISIBLE) {
-                        fab.show();
-                    }
-                }
-            });
+            showActive();
         }
     }
 
     public void showActive(){
 
-        Log.i(TAG, "showActive: is running");
+
         DataBase_Operation db = App.getDataBaseOperation();
         list = db.Show_Active_user();
         linearLayout_main_page_empty.setVisibility(View.INVISIBLE);
@@ -335,6 +319,20 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
 
     }
 
+    private class AskTime_Async extends AsyncTask<String, String, String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+    }
+
+
 
     public void Ask_time () {
 
@@ -342,9 +340,17 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
 
         LocalBroadcastManager.getInstance(getContext()).sendBroadcastSync(intent);
 
-        showActive();
+        //receive();
 
-       // receive();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showActive();
+            }
+        }, 1000);
+
+
     }
 
     private void receive (){
@@ -353,7 +359,7 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                Log.i(TAG, "onReceive: is running ");
+
                     showActive();
             }
         };

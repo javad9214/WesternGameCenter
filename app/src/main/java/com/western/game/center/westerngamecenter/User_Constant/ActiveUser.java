@@ -5,7 +5,7 @@ package com.western.game.center.westerngamecenter.User_Constant;
 public class ActiveUser {
 
 
-    public int Username_id ;
+    public int Username_id ; // foreign key equal user UID
     public String startTime ;
     public String endTime ;
     public long Elapsed_time ;
@@ -17,6 +17,7 @@ public class ActiveUser {
     public String LastName ;
     public int Tv_Num ;
     public int Tag_Num ;
-    public boolean null_flag;
+    public boolean null_flag ;
+    public int active_UID ; // unique
 
 }

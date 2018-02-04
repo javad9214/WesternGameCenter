@@ -264,13 +264,19 @@ public class DataBase_Operation implements DataBase_DAO{
     }
 
     @Override
-    public ActiveUser Search_ActiveUser(int id) {
+    public ActiveUser Search_ActiveUser(int id , int Mode) {
         Cursor cursor ;
         String selections ;
-
         ActiveUser activeUser = new ActiveUser();
 
-        selections = DB_Constants.ActiveUsersTable.USERNAME + " like ?";
+        if (Mode == 1){
+            selections = DB_Constants.ActiveUsersTable.USERNAME + " like ?";
+        }else {
+            selections = DB_Constants.ActiveUsersTable.TAG_NUM + " like ?";
+        }
+
+
+
         String[] selectionArgs = {"%" + id + "%"};
 
         cursor = db_user.query(DB_Constants.ActiveUsersTable.ACTIVE_USER_TABLE_NAME, null , selections , selectionArgs , null , null , null );
@@ -283,6 +289,7 @@ public class DataBase_Operation implements DataBase_DAO{
             cursor.moveToFirst();
 
             activeUser.Username_id = cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.USERNAME));
+            activeUser.active_UID = cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.ACTIVE_USER_UID));
             activeUser.NumJoyStick = cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.NUM_JOYSTICK));
             activeUser.Tag_Num = cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.TAG_NUM));
             activeUser.Tv_Num = cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.TV_NUM));
@@ -394,6 +401,7 @@ public class DataBase_Operation implements DataBase_DAO{
                 activeUser = new ActiveUser();
 
                 activeUser.Username_id = cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.USERNAME));
+                activeUser.active_UID = cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.ACTIVE_USER_UID));
                 activeUser.NumJoyStick = cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.NUM_JOYSTICK));
                 activeUser.Tag_Num = cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.TAG_NUM));
                 activeUser.Tv_Num = cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.TV_NUM));

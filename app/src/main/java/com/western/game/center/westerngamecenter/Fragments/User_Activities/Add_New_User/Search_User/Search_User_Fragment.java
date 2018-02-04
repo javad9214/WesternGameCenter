@@ -190,32 +190,8 @@ public class Search_User_Fragment extends Fragment {
                     Convert convert = new Convert( user3.TotalMoney , 1 , true);
                     Log.i(TAG2, "onItemClick: " + "PLAY TIME : " + convert.result_time());
 
-
-                    /*
-                    TextView az_name , az_lastname , azphone , az_tatl , az_lastmon , az_date  , az_time;
-                    AlertDialog.Builder  builder = new AlertDialog.Builder(getContext());
-                    View dialog =  layoutInflater.inflate(R.layout.az , null);
-                    az_name  = (TextView) dialog.findViewById(R.id.az_name);
-                    az_lastname  = (TextView) dialog.findViewById(R.id.az_lastname);
-                    azphone  = (TextView) dialog.findViewById(R.id.az_phone);
-                    az_tatl  = (TextView) dialog.findViewById(R.id.az_total);
-                    az_lastmon  = (TextView) dialog.findViewById(R.id.az_left);
-                    az_date  = (TextView) dialog.findViewById(R.id.az_date);
-                    az_time  = (TextView) dialog.findViewById(R.id.az_time);
-                    az_name.setText("NAME : " + user3.Name);
-                    az_lastname.setText("LAST NAME : " + user3.LastName);
-                    azphone.setText("PHONE : " + user3.Phone);
-                    az_tatl.setText("TOTAL MONEY : " + user3.TotalMoney);
-                    az_lastmon.setText("LEFT MONEY : " + user3.LeftMoney);
-                    az_date.setText("DATE : " + user3.Date);
-                    Convert convert = new Convert( user3.TotalMoney , 1 , true);
-                    az_time.setText("PLAY TIME : " + convert.result_time());
-                    builder.setPositiveButton("OK" , null);
-                    builder.show();
-                     */
-
                     if (!isLongClicked){
-                        if (db.Search_ActiveUser(db.show_user().get(position).UID) != null){
+                        if (db.Search_ActiveUser(db.show_user().get(position).UID , 1) != null){
 
 
                             AlertDialog.Builder  builder = new AlertDialog.Builder(getContext());
@@ -498,7 +474,7 @@ public class Search_User_Fragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
 
-                if (db.Search_ActiveUser(list.get(position).UID) != null){
+                if (db.Search_ActiveUser(list.get(position).UID , 1) != null){
                     AlertDialog.Builder  builder = new AlertDialog.Builder(getContext());
                     builder.setTitle("This User has Already Activated ...");
                     builder.setMessage("You Cant Active a User More than One times ...");

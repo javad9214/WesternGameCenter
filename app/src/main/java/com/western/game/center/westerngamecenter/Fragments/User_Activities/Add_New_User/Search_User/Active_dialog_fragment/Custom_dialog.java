@@ -100,7 +100,7 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
         adapter.addFragment("2" , fragment2 );
         adapter.addFragment("3" , fragment3 );
 
-        Log.i(TAG, "onCreateView: " + fragment1.getView());
+
 
         viewPager.setAdapter(adapter);
         indicator.setViewPager(viewPager);
@@ -357,7 +357,7 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
     private void SendDataUser(long time1 , long money , int num){
 
         activeUser  = new ActiveUser();
-        Log.i(TAG, "SendDataUser: " + time1);
+
         activeUser.Remaining_Time = time1 ;
         Calendar calendar = Calendar.getInstance();
         activeUser.startTime = String.valueOf(calendar.get(calendar.HOUR_OF_DAY)) + " : " +
@@ -381,11 +381,10 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
         activeUser.NumJoyStick = num ;
         activeUser.NAME = user.Name ;
         activeUser.LastName = user.LastName ;
-
         activeUser.Tv_Num = tv_num ;
-
+        activeUser.isRunning = false ;
         activeUser.null_flag = true ;
-        Log.i(TAG, "SendDataUser: " + activeUser.endTime + "   " + activeUser.startTime + "   " + activeUser.money  + "   " + activeUser.Remaining_Time);
+
 
         db.addActiveUser(activeUser);
 
@@ -400,7 +399,7 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
 
         endtime = calendar.get(calendar.MINUTE) + Math.round(leftTime) ;
         EndTimeHour = (int) endtime / 60 ;
-        Log.i(TAG, "calcEndTime: " + EndTimeHour);
+
         EndTimeMin = Math.round(endtime % 60 );
         if (calendar.get(calendar.HOUR_OF_DAY)+EndTimeHour > 24){
             EndTimeHour = EndTimeHour - (24 - calendar.get(calendar.HOUR_OF_DAY));

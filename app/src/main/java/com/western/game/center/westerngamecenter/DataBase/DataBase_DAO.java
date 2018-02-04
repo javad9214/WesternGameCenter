@@ -22,7 +22,8 @@ public interface DataBase_DAO {
 
     List<User> Search_User(String name);
 
-    ActiveUser Search_ActiveUser(int id);
+    ActiveUser Search_ActiveUser(int id , int Mode);
+
 
     long addActiveUser(ActiveUser activeUser);
 
