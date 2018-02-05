@@ -8,6 +8,12 @@
     android:fitsSystemWindows="true"
     tools:context="com.western.game.center.westerngamecenter.ActiveUsers.Active_User_Base">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,7 +28,84 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_searching_user_fragment" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recycler_searchView">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/empty_search_page_background"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_background_search_page_null" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Oops :( "
+                android:typeface="monospace"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="No User Found ... !"
+                android:typeface="monospace"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Any User you Add will appear here. "
+                android:layout_marginTop="5dp"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Click  'Add New User'  for new User  :)"
+                android:layout_marginTop="5dp"
+                android:textSize="13sp"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Results"
+            android:id="@+id/text_no_results"
+            android:visibility="invisible"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="18sp"/>
+
+
+    </RelativeLayout>
+
+    </LinearLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>

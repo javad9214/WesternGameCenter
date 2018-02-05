@@ -31,6 +31,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,6 +42,8 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.geniusforapp.achievementunlocked.AchievementUnlocked;
 import com.geniusforapp.achievementunlocked.entity.AchievementData;
@@ -52,6 +55,7 @@ import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_N
 import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Search_User.Search_User_Fragment;
 import com.western.game.center.westerngamecenter.R;
 import com.western.game.center.westerngamecenter.Service.TimerService;
+import com.western.game.center.westerngamecenter.Tools.OnSwipeTouchListener;
 import com.western.game.center.westerngamecenter.Tools.TypefaceSpan;
 import com.western.game.center.westerngamecenter.User_Constant.ActiveUser;
 
@@ -133,15 +137,22 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
         window.setStatusBarColor(Color.rgb(183 , 28 , 28));
 
 
-
-
-
-
         fab.setOnClickListener(this);
 
         view1 = view.findViewById(R.id.fab_add_active_user);
 
+        view.setOnTouchListener(new OnSwipeTouchListener(getContext()){
 
+            public void onSwipeLeft() {
+
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction() ;
+                fragmentTransaction.setCustomAnimations(R.anim.enter_from_right , R.anim.exit_to_left);
+                fragmentTransaction.replace(R.id.placeholder ,  new Search_User_Fragment() , "main_active_user_fragment");
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+
+        });
 
         setActive();
 
@@ -311,6 +322,7 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
     public void onClick(View v) {
 
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction() ;
+        fragmentTransaction.setCustomAnimations(R.anim.enter_from_right , R.anim.exit_to_left);
         fragmentTransaction.replace(R.id.placeholder , new Search_User_Fragment(), "search_user_fragment");
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -347,6 +359,10 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
         }
         return false;
     }
+
+
+
+
 
 
 

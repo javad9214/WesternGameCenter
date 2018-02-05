@@ -44,6 +44,7 @@ import com.western.game.center.westerngamecenter.DataBase.DataBase_Operation;
 import com.western.game.center.westerngamecenter.Fragments.Main_Active_User_Fragment;
 import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Search_User.Active_dialog_fragment.Custom_dialog;
 import com.western.game.center.westerngamecenter.R;
+import com.western.game.center.westerngamecenter.Tools.OnSwipeTouchListener;
 import com.western.game.center.westerngamecenter.Tools.RecyclerItemClickListener;
 import com.western.game.center.westerngamecenter.Tools.TypefaceSpan;
 import com.western.game.center.westerngamecenter.User_Constant.Convert;
@@ -119,6 +120,7 @@ public class Search_User_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
        View view =  inflater.inflate(R.layout.searching_user_drwable, container, false);
 
+        View view1 = view.findViewById(R.id.recycler_searchView);
         init(view);
 
 
@@ -131,6 +133,21 @@ public class Search_User_Fragment extends Fragment {
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(s);
+
+
+        view1.setOnTouchListener(new OnSwipeTouchListener(getContext()){
+
+            public void onSwipeRight() {
+
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction() ;
+                Main_Active_User_Fragment main_active_user_fragment = Main_Active_User_Fragment.newInstance(true);
+                fragmentTransaction.setCustomAnimations(R.anim.enter_from_left , R.anim.exit_to_right);
+                fragmentTransaction.replace(R.id.placeholder , main_active_user_fragment , "main_active_user_fragment");
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+
+        });
 
         show_all_users();
 
@@ -367,6 +384,7 @@ public class Search_User_Fragment extends Fragment {
             case android.R.id.home :
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction() ;
                 Main_Active_User_Fragment main_active_user_fragment = Main_Active_User_Fragment.newInstance(true);
+                fragmentTransaction.setCustomAnimations(R.anim.enter_from_left , R.anim.exit_to_right);
                 fragmentTransaction.replace(R.id.placeholder , main_active_user_fragment , "main_active_user_fragment");
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();

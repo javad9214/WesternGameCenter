@@ -91,7 +91,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
         if (activeUser.isRunning){
 
             holder1.resume_flag = activeUser.isResuming ;
-            holder1.pause_flag = activeUser.isPause ;
+            holder1.pause_new_flag = activeUser.isPause ;
             if (activeUser.isResuming){
                 holder1.start_continue(activeUser);
             }else if (activeUser.isPause){
@@ -307,13 +307,14 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
                     if (start_flag){
 
-
+                        Log.i(TAG, "onClick:  start flag ");
                         pause_flag = true ;
                         start_flag = false ;
                         pause();
 
                     }else if (pause_flag){
 
+                        Log.i(TAG, "onClick:  pause flag ");
 
                         pause_flag = false ;
                         resume_flag = true ;
@@ -323,17 +324,20 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
                     }else if (resume_flag){
 
+                        Log.i(TAG, "onClick:  resume flag ");
 
                         pause_flag = true ;
                         resume_flag = false ;
                         pause();
 
                     }else if (stop_flag){
+                        Log.i(TAG, "onClick:  stop flag ");
 
                         Log.i(TAG, "onClick:  stop");
 
                     } else if (pause_new_flag){
 
+                        Log.i(TAG, "onClick:  pause new flag ");
 
                         pause_flag = false ;
                         resume_flag = true ;
@@ -345,6 +349,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
                     } else {
 
+                        Log.i(TAG, "onClick:  else ");
 
                         start_flag = true ;
                         start_begin();

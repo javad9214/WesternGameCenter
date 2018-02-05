@@ -202,7 +202,7 @@ public class Add_user_dialog extends DialogFragment implements View.OnClickListe
         achievementData.setTitle("     New User Saved Successfully");
         achievementData.setState(AchievementIconView.AchievementIconViewStates.FADE_DRAWABLE);
         achievementData.setBackgroundColor(Color.parseColor("#ffffff"));
-        achievementData.setIcon(getResources().getDrawable(R.drawable.ic_logo_western));
+        achievementData.setIcon(getResources().getDrawable(R.drawable.ic_logo_western_web));
         achievementData.setTextColor(getResources().getColor(android.R.color.black));
         test.show(achievementData);
     }
