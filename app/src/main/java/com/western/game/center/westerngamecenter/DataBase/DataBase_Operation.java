@@ -307,6 +307,18 @@ public class DataBase_Operation implements DataBase_DAO{
                 activeUser.isRunning = false ;
             }
 
+            if (cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.IS_RUN_PAUSE)) > 0 ){
+                activeUser.isPause = true ;
+            }else {
+                activeUser.isPause = false ;
+            }
+
+            if (cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.IS_RUN_RESUME)) > 0 ){
+                activeUser.isResuming = true ;
+            }else {
+                activeUser.isResuming = false ;
+            }
+
 
             cursor.close();
         }
@@ -327,6 +339,8 @@ public class DataBase_Operation implements DataBase_DAO{
         values.put(DB_Constants.ActiveUsersTable.NUM_JOYSTICK , activeUser.NumJoyStick);
         values.put(DB_Constants.ActiveUsersTable.TV_NUM , activeUser.Tv_Num);
         values.put(DB_Constants.ActiveUsersTable.IS_RUNNING , 0 );
+        values.put(DB_Constants.ActiveUsersTable.IS_RUN_RESUME , 0 );
+        values.put(DB_Constants.ActiveUsersTable.IS_RUN_PAUSE , 0 );
         values.put(DB_Constants.ActiveUsersTable.ELAPSED_TIME , 0 );
         values.put(DB_Constants.ActiveUsersTable.REMAINING_TIME , activeUser.Remaining_Time );
         values.put(DB_Constants.ActiveUsersTable.TAG_NUM , -1 );
@@ -362,6 +376,22 @@ public class DataBase_Operation implements DataBase_DAO{
 
             case 3 : //Tag number
                 values.put(DB_Constants.ActiveUsersTable.TAG_NUM , activeUser.Tag_Num);
+                break;
+
+            case 4 : //is pause !
+                if (activeUser.isPause){
+                    values.put(DB_Constants.ActiveUsersTable.IS_RUN_PAUSE , 1);
+                }else {
+                    values.put(DB_Constants.ActiveUsersTable.IS_RUN_RESUME , 0);
+                }
+                break;
+
+            case 5 : // is resuming ...
+                if (activeUser.isResuming){
+                    values.put(DB_Constants.ActiveUsersTable.IS_RUN_RESUME , 1);
+                }else {
+                    values.put(DB_Constants.ActiveUsersTable.IS_RUN_RESUME , 0);
+                }
                 break;
         }
 
@@ -417,6 +447,18 @@ public class DataBase_Operation implements DataBase_DAO{
                     activeUser.isRunning = true ;
                 }else {
                     activeUser.isRunning = false ;
+                }
+
+                if (cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.IS_RUN_PAUSE)) > 0 ){
+                    activeUser.isPause = true ;
+                }else {
+                    activeUser.isPause = false ;
+                }
+
+                if (cursor.getInt(cursor.getColumnIndex(DB_Constants.ActiveUsersTable.IS_RUN_RESUME)) > 0 ){
+                    activeUser.isResuming = true ;
+                }else {
+                    activeUser.isResuming = false ;
                 }
 
                 list.add(activeUser);

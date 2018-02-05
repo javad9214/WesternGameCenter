@@ -41,7 +41,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
     public static final String TAG = "===>" ;
     LayoutInflater inflater ;
     private Context context  ;
-    ActiveUser user ;
+    ActiveUser activeUser;
     int position ;
     View view1;
 
@@ -75,61 +75,35 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
         this.position = position ;
         Recycler_viewHolder  holder1 = (Recycler_viewHolder) holder ;
         holder2 = holder1 ;
-        user = dataList.get(position);
-        holder1.tx_Name.setText(String.valueOf(user.NAME));
-        holder1.tx_LastName.setText(String.valueOf(user.LastName));
-        holder1.tx_startTime.setText(String.valueOf(user.startTime));
-        holder1.tx_endTime.setText(String.valueOf(user.endTime));
-        holder1.tx_money.setText("Money : " + String.valueOf(user.money) + " T");
-        holder1.tx_leftTime.setText(String.valueOf((long) user.Remaining_Time));
-        holder1.tx_numJoystick.setText( "GamePads : " + String.valueOf(user.NumJoyStick));
+        activeUser = dataList.get(position);
+        holder1.tx_Name.setText(String.valueOf(activeUser.NAME));
+        holder1.tx_LastName.setText(String.valueOf(activeUser.LastName));
+        holder1.tx_startTime.setText(String.valueOf(activeUser.startTime));
+        holder1.tx_endTime.setText(String.valueOf(activeUser.endTime));
+        holder1.tx_money.setText("Money : " + String.valueOf(activeUser.money) + " T");
+        holder1.tx_leftTime.setText(String.valueOf((long) activeUser.Remaining_Time /1000));
+        holder1.tx_numJoystick.setText( "GamePads : " + String.valueOf(activeUser.NumJoyStick));
         holder1.tx_money.setVisibility(View.GONE);
         holder1.tx_numJoystick.setVisibility(View.GONE);
 
-        if (user.isRunning){
-
-            holder1.start_pause.setText("Pause");
-            holder1.start_pause.setTextColor(Color.parseColor("#d50000"));
-            holder1.start_flag = true ;
-
-            holder1.time = user.Remaining_Time;
-
-            holder1.animator.setDuration( holder1.time);
-            Log.i(TAG, "onBindViewHolder: " + holder1.time);
-            holder1. animator.setInterpolator(new LinearInterpolator());
-            Log.i(TAG, "onBindViewHolder: " + user.Elapsed_time);
-            holder1.animator.setCurrentPlayTime(user.Elapsed_time);
 
 
-            holder1. timer =  new ExampleTimer(1000 , holder1.time) {
-                long leftTime =  holder2.time / 1000  ;
-                @Override
-                protected void onTick() {
-                    holder2.tx_leftTime.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            holder2 .tx_leftTime.setText(String.valueOf(leftTime--));
-                        }
-                    });
-                }
+        if (activeUser.isRunning){
 
-                @Override
-                protected void onFinish() {
-                    holder2. tx_leftTime.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            holder2.tx_leftTime.setText("Finished ...");
-                        }
-                    });
-                }
-            };
+            holder1.resume_flag = activeUser.isResuming ;
+            holder1.pause_flag = activeUser.isPause ;
+            if (activeUser.isResuming){
+                holder1.start_continue(activeUser);
+            }else if (activeUser.isPause){
+                holder1.pause_continue(activeUser);
+            }
 
-
-            holder1. animator.start();
-            holder1. timer.start();
         }
 
+
     }
+
+
 
     public void delete(int position , ActiveUsers_Recycler_Adapter adapter){
         dataList.remove(position);
@@ -192,13 +166,16 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
         ObjectAnimator animator ;
 
         Timer timer ;
+        Timer timer1 []  ;
+        ObjectAnimator animator1 [] ;
+        int tag_id ;
 
         Activity activity ;
 
         TimerService timerService ;
 
 
-        boolean flag_dropdown = false  , start_flag = false  , pause_flag = false ;
+        boolean flag_dropdown = false  , start_flag = false  , pause_flag = false   , resume_flag = false , stop_flag = false   , pause_new_flag = false ;
 
 
         public Recycler_viewHolder(View itemView , final List<ActiveUser> list , Context context , View view , Activity activity ) {
@@ -208,6 +185,10 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
             this.context = context ;
             this.view = view ;
             this.activity = activity ;
+
+            timer1 = new Timer[40] ;
+            animator1 = new ObjectAnimator[40];
+            tag_id = -1 ;
 
             timerService = new TimerService() ;
 
@@ -240,7 +221,10 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
 
 
+
         }
+
+
 
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
@@ -275,7 +259,13 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 DataBase_Operation db = App.getDataBaseOperation();
+                                list.get(getLayoutPosition()).isRunning = false ;
+                                db.Update_Active_User(list.get(getLayoutPosition()) , 2);
                                 db.Delete_ActiveUser(list.get(getLayoutPosition()));
+                                if (db.Show_Active_user().size() == 0){
+                                    Intent service = new Intent(context , TimerService.class);
+                                    context.stopService(service);
+                                }
 
                                 mySnackbar.setAction("Undo", new View.OnClickListener() {
                                     @Override
@@ -297,9 +287,14 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
                         });
                         mySnackbar.show();
                         DataBase_Operation db = App.getDataBaseOperation();
-                        db.Delete_ActiveUser(list.get(getLayoutPosition()));
                         list.get(getLayoutPosition()).isRunning = false ;
                         db.Update_Active_User(list.get(getLayoutPosition()) , 2);
+                        db.Delete_ActiveUser(list.get(getLayoutPosition()));
+                        if (db.Show_Active_user().size() == 0){
+                            Intent service = new Intent(context , TimerService.class);
+                            context.stopService(service);
+                        }
+
 
 
                     }
@@ -310,26 +305,51 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
                 case R.id.btn_start_pause_user:
 
-                    Log.i(TAG, "onClick: " + getLayoutPosition());
-
-                    if (!start_flag){
-
-                            start_begin();
-                            start_flag = true ;
+                    if (start_flag){
 
 
-                    }else if (start_flag && !pause_flag){
-
-                        pause();
                         pause_flag = true ;
+                        start_flag = false ;
+                        pause();
 
                     }else if (pause_flag){
 
-                        resume();
+
                         pause_flag = false ;
+                        resume_flag = true ;
+                        resume();
 
 
-                     }
+
+                    }else if (resume_flag){
+
+
+                        pause_flag = true ;
+                        resume_flag = false ;
+                        pause();
+
+                    }else if (stop_flag){
+
+                        Log.i(TAG, "onClick:  stop");
+
+                    } else if (pause_new_flag){
+
+
+                        pause_flag = false ;
+                        resume_flag = true ;
+                        pause_new_flag = false ;
+                        animator.start();
+                        timer1[tag_id].start();
+                        resume();
+
+
+                    } else {
+
+
+                        start_flag = true ;
+                        start_begin();
+
+                    }
 
                     break;
 
@@ -341,20 +361,22 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
             start_pause.setText("pause");
             start_pause.setTextColor(Color.parseColor("#d50000"));
 
+            tag_id ++ ;
 
             time = list.get(getLayoutPosition()).Remaining_Time;
+
 
             Intent service = new Intent(context , TimerService.class);
             service.putExtra("id" , list.get(getLayoutPosition()).Username_id) ;
             service.putExtra("mode" , 0 ) ;
             context.startService(service);
 
-            animator.setDuration(time*60*1000);
+            animator.setDuration(time);
             animator.setCurrentPlayTime(list.get(getLayoutPosition()).Elapsed_time);
             animator.setInterpolator(new LinearInterpolator());
 
-            timer =  new ExampleTimer(1000 , time*60*1000) {
-                long leftTime = time *60 ;
+            timer1[tag_id] =  new ExampleTimer(1000 , time) {
+                long leftTime = time /1000 ;
                 @Override
                 protected void onTick() {
                     tx_leftTime.post(new Runnable() {
@@ -378,7 +400,90 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
 
             animator.start();
-            timer.start();
+            timer1[tag_id].start();
+        }
+
+        private void start_continue (ActiveUser activeUser1){
+
+            start_pause.setText("pause");
+            start_pause.setTextColor(Color.parseColor("#d50000"));
+
+            tag_id ++ ;
+
+            time = activeUser1.Remaining_Time;
+
+
+
+            animator.setDuration(time);
+            animator.setCurrentPlayTime(activeUser1.Elapsed_time);
+            animator.setInterpolator(new LinearInterpolator());
+
+            timer1[tag_id] =  new ExampleTimer(1000 , time) {
+                long leftTime = time /1000 ;
+                @Override
+                protected void onTick() {
+                    tx_leftTime.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tx_leftTime.setText(String.valueOf(leftTime--));
+                        }
+                    });
+                }
+
+                @Override
+                protected void onFinish() {
+                    tx_leftTime.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tx_leftTime.setText("Finished ...");
+                        }
+                    });
+                }
+            };
+
+
+            animator.start();
+            timer1[tag_id].start();
+
+        }
+
+        private void pause_continue (ActiveUser activeUser1){
+
+            start_pause.setText("resume");
+            start_pause.setTextColor(Color.parseColor("#64dd17"));
+            stop.setVisibility(View.VISIBLE);
+            tag_id ++ ;
+
+            time = activeUser1.Remaining_Time;
+
+
+
+            animator.setDuration(time);
+            animator.setCurrentPlayTime(activeUser1.Elapsed_time);
+            animator.setInterpolator(new LinearInterpolator());
+
+            timer1[tag_id] =  new ExampleTimer(1000 , time) {
+                long leftTime = time /1000 ;
+                @Override
+                protected void onTick() {
+                    tx_leftTime.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tx_leftTime.setText(String.valueOf(leftTime--));
+                        }
+                    });
+                }
+
+                @Override
+                protected void onFinish() {
+                    tx_leftTime.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tx_leftTime.setText("Finished ...");
+                        }
+                    });
+                }
+            };
         }
 
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -390,11 +495,12 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
             Intent service = new Intent(context , TimerService.class);
             service.putExtra("mode" , 1) ;
             Log.i(TAG, "pause: " + list.get(getLayoutPosition()).Tag_Num);
+            Log.i(TAG, "pause: " + list.get(getLayoutPosition()).NAME);
             service.putExtra("id" , list.get(getLayoutPosition()).Username_id) ;
             context.startService(service);
 
             animator.pause();
-            timer.pause();
+            timer1[tag_id].pause();
         }
 
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -409,7 +515,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
             context.startService(service);
 
             animator.resume();
-            timer.resume();
+            timer1[tag_id].resume();
         }
 
         private void stop (){}

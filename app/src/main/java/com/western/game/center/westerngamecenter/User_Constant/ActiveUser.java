@@ -10,6 +10,8 @@ public class ActiveUser {
     public String endTime ;
     public long Elapsed_time ;
     public boolean isRunning ;
+    public boolean isPause;
+    public boolean isResuming ;
     public int NumJoyStick ;
     public long money ;
     public long Remaining_Time;

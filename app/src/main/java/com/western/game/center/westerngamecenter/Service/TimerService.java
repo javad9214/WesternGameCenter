@@ -94,10 +94,11 @@ public class TimerService extends Service {
 
     private void start_new_active (final ActiveUser activeUser){
 
+        Log.i(TAG, "start_new_active: ");
         tag_id++ ;
-        Log.i(TAG, "start_new_active: " + tag_id + " id : " + activeUser.Username_id + "  UID  : " + activeUser.active_UID);
+
         if (activeUser == null) {
-            Log.i(TAG, "onStartCommand: nuuulllll");
+
             tag_id -- ;
         }else {
 
@@ -105,21 +106,26 @@ public class TimerService extends Service {
             db.Update_Active_User(activeUser , 2);
             activeUser.Tag_Num = tag_id ;
             db.Update_Active_User(activeUser , 3);
-            timer[tag_id] = new ExampleTimer(1000, activeUser.Remaining_Time*60*1000) {
+            activeUser.isPause = false ;
+            activeUser.isResuming = true ;
+            db.Update_Active_User(activeUser , 4);
+            db.Update_Active_User(activeUser , 5);
+            timer[tag_id] = new ExampleTimer(1000, activeUser.Remaining_Time) {
                 @Override
                 protected void onTick() {
                     super.onTick();
 
-                    Log.i(TAG, "onTick:  "  + tag_id + "  " + timer[tag_id].isRunning() + "   " + timer[tag_id].getElapsedTime() + "  " + timer[tag_id].getRemainingTime());
+                   // Log.i(TAG, "onTick:  "  + tag_id + "  " + timer[tag_id].isRunning() + "   " + timer[tag_id].getElapsedTime() + "  " + timer[tag_id].getRemainingTime());
 
                 }
 
                 @Override
                 protected void onFinish() {
                     super.onFinish();
-                    Log.i(TAG, "onFinish: " );
+                    //Log.i(TAG, "onFinish: " );
                     activeUser.isRunning = false ;
                     db.Update_Active_User(activeUser , 2);
+                    db.Delete_ActiveUser(activeUser);
 
                 }
             };
@@ -130,10 +136,18 @@ public class TimerService extends Service {
 
     public void onPause (int tagId){
         Log.i(TAG, "onPause:  "  + tag_id + "  " + timer[tag_id].isRunning() + "   " + timer[tag_id].getElapsedTime() + "  " + timer[tag_id].getRemainingTime());
+            activeUser.isPause = true ;
+            activeUser.isResuming = false ;
+         db.Update_Active_User(activeUser , 4);
+         db.Update_Active_User(activeUser , 5);
             timer[tagId].pause();
         }
 
     public void onResume(int tagId){
+        activeUser.isPause = false ;
+        activeUser.isResuming = true ;
+        db.Update_Active_User(activeUser , 4);
+        db.Update_Active_User(activeUser , 5);
         timer[tagId].resume();
     }
 
@@ -143,14 +157,27 @@ public class TimerService extends Service {
             @Override
             public void onReceive(Context context, Intent intent) {
 
+
+
                     for (int j = 0; j <= tag_id ; j ++  ){
                          activeUser = new ActiveUser();
                          activeUser = db.Search_ActiveUser(j , 0);
-                         activeUser.Remaining_Time = timer[j].getRemainingTime() ;
-                        Log.i(TAG, "onReceive: " + timer[j].getRemainingTime());
-                         db.Update_Active_User(activeUser , 0 ) ;
-                         activeUser.Elapsed_time  = timer[j].getElapsedTime();
-                         db.Update_Active_User(activeUser , 1) ;
+                        Log.i(TAG, "onReceive: all active users  :  " + tag_id);
+                        if (activeUser == null){
+
+                            Log.i(TAG, "onReceive:  active user is null " + j);
+
+                        }else {
+                            Log.i(TAG, "onReceive: " + activeUser.NAME + "  " + j);
+                            activeUser.Remaining_Time = (timer[j].getRemainingTime());
+                            Log.i(TAG, "onReceive: " + timer[j].getRemainingTime());
+                            db.Update_Active_User(activeUser, 0);
+                            activeUser.Elapsed_time = (timer[j].getElapsedTime()) ;
+                            db.Update_Active_User(activeUser, 1);
+
+                            Log.i(TAG, "onReceive: " +  db.Search_ActiveUser(activeUser.Username_id , 1).Remaining_Time);
+
+                        }
 
                     }
 

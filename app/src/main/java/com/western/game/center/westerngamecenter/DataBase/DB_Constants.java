@@ -44,6 +44,8 @@ public class DB_Constants {
         public static final String END_TIME = "end_time";
         public static final String ELAPSED_TIME = "elapsed_time";
         public static final String IS_RUNNING = "is_running";
+        public static final String IS_RUN_PAUSE = "is_run_pause";
+        public static final String IS_RUN_RESUME = "is_run_resume";
         public static final String USERNAME = "username";
         public static final String NAME = "name";
         public static final String LAST_NAME = "last_name";
@@ -66,6 +68,8 @@ public class DB_Constants {
                         TV_NUM + " integer ," +
                         MONEY + " real ," +
                         IS_RUNNING + " integer ," +
+                        IS_RUN_PAUSE + " integer ," +
+                        IS_RUN_RESUME + " integer ," +
                         TAG_NUM + " integer ," +
                         ELAPSED_TIME + " real ," +
                         REMAINING_TIME + " real " +

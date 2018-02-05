@@ -2,6 +2,7 @@ package com.western.game.center.westerngamecenter.Fragments;
 
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -50,6 +51,7 @@ import com.western.game.center.westerngamecenter.DataBase.DataBase_Operation;
 import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Add_new_User.Add_user_dialog;
 import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Search_User.Search_User_Fragment;
 import com.western.game.center.westerngamecenter.R;
+import com.western.game.center.westerngamecenter.Service.TimerService;
 import com.western.game.center.westerngamecenter.Tools.TypefaceSpan;
 import com.western.game.center.westerngamecenter.User_Constant.ActiveUser;
 
@@ -207,7 +209,7 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
         achievementData.setTitle("     New User Saved Successfully");
         achievementData.setState(AchievementIconView.AchievementIconViewStates.FADE_DRAWABLE);
         achievementData.setBackgroundColor(Color.parseColor("#ffffff"));
-        achievementData.setIcon(getResources().getDrawable(R.drawable.ic_logo_western));
+        achievementData.setIcon(getResources().getDrawable(R.drawable.ic_logo_western_web));
         achievementData.setTextColor(getResources().getColor(android.R.color.black));
         test.show(achievementData);
     }
@@ -220,7 +222,7 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
 
             linearLayout_main_page_empty.setVisibility(View.VISIBLE);
 
-        }else if (list.get(0).isRunning){
+        }else if (isMyServiceRunning(TimerService.class)){
 
             Log.i(TAG, "setActive:  username :" + list.get(0).Username_id + "  tag num :"  + list.get(0).Tag_Num);
             Ask_time();
@@ -319,28 +321,11 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
 
     }
 
-    private class AskTime_Async extends AsyncTask<String, String, String>{
-
-        @Override
-        protected String doInBackground(String... strings) {
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
-    }
-
-
-
     public void Ask_time () {
 
         Intent intent = new Intent("onTime_Action");
 
         LocalBroadcastManager.getInstance(getContext()).sendBroadcastSync(intent);
-
-        //receive();
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -353,18 +338,14 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
 
     }
 
-    private void receive (){
-
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-
-                    showActive();
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
             }
-        };
-
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver , new IntentFilter("onTime_Action2"));
+        }
+        return false;
     }
 
 

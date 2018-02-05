@@ -18,6 +18,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -202,8 +203,10 @@ public class Search_User_Fragment extends Fragment {
 
 
                         }else {
+                            CardView imageView  = view.findViewById(R.id.card_transition);
                             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                             transaction.addToBackStack(null);
+                            transaction.addSharedElement(imageView , "transition_photo");
                             Custom_dialog custom_dialog = Custom_dialog.newInstance(userArrayList.get(position).UID);
                             custom_dialog.show(transaction, "dialog");
                         }
