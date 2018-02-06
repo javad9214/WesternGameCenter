@@ -28,6 +28,11 @@ dependencies {
     dependencies {
         compile 'com.github.chenupt.android:springindicator:1.0.2@aar'
     }
+    android {
+        lintOptions {
+            disable 'RestrictedApi'
+        }
+    }
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support:recyclerview-v7:26.+'
     compile 'com.android.support:cardview-v7:26.+'
@@ -39,9 +44,4 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.geniusforapp.achievementunlocked:achievement:0.0.1'
     testCompile 'junit:junit:4.12'
-    android {
-        lintOptions {
-            disable 'RestrictedApi'
-        }
-    }
 }

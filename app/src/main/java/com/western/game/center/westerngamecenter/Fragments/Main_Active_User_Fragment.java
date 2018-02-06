@@ -3,11 +3,15 @@ package com.western.game.center.westerngamecenter.Fragments;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,10 +24,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.RemoteInput;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -64,6 +70,8 @@ import java.util.ArrayList;
 
 public class Main_Active_User_Fragment extends Fragment implements  View.OnClickListener , RadioGroup.OnCheckedChangeListener{
 
+
+    private static final String KEY_TEXT_REPLY = "key_text_reply";
 
     public static final String TAG = "===>" ;
 
@@ -183,7 +191,7 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
             case R.id.action_settings :
 
 
-                showAchievement();
+                onFinish_notification();
 
                 break;
 
@@ -358,6 +366,55 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
             }
         }
         return false;
+    }
+
+    private void onFinish_notification (){
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext());
+        mBuilder.setSmallIcon(R.drawable.ic_logo_western_web2);
+        mBuilder.setContentTitle("Notification Alert, Click Me!");
+        mBuilder.setOngoing(true);
+        mBuilder.setLights(Color.RED, 1000, 10000);
+        long[] pattern2 = {500,500,500,500,500} ;
+        if (Build.VERSION.SDK_INT >= 21) mBuilder.setVibrate(new long[0]);
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        mBuilder.setSound(notification , RingtoneManager.TYPE_ALARM );
+        mBuilder.setContentText("Hi, This is Android Notification Detail!");
+        mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+        mBuilder.setCategory(NotificationCompat.CATEGORY_CALL);
+        mBuilder.mNotification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR ;
+       // mBuilder.setDefaults(NotificationCompat.DEFAULT_ALL);
+        //mBuilder.setStyle(new NotificationCompat.InboxStyle());
+        //mBuilder.setVibrate(pattern2);
+
+        RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY).setLabel("answer me ").build();
+
+        //PendingIntent that restarts the current activity instance.
+        // Intent resultIntent = new Intent(this, Active_User_Base.class);
+        // resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        //PendingIntent resultPendingIntent = PendingIntent.getActivity(this , 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
+        //  android.R.drawable.sym_action_chat, "REPLY", resultPendingIntent)
+        // .addRemoteInput(remoteInput)
+        //.setAllowGeneratedReplies(true)
+        //  .build();
+
+
+        // mBuilder.addAction(replyAction);
+
+
+        Intent intent = new Intent("dismissIntent");
+        intent.setAction("dismiss");
+        intent.putExtra("notificationId", 1);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+       // PendingIntent dismissIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        // mBuilder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "DISMISS", dismissIntent);
+
+
+        NotificationManager mNotificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(1, mBuilder.build());
+        // mNotificationManager.cancel(this.getIntent().getIntExtra("notificationId" , 1 ));
     }
 
 

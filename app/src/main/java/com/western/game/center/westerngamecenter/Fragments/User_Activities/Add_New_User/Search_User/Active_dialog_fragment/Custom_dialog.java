@@ -7,10 +7,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -34,7 +32,7 @@ import java.util.Calendar;
 import github.chenupt.springindicator.SpringIndicator;
 
 
-public class Custom_dialog extends DialogFragment implements View.OnClickListener  , View.OnKeyListener {
+public class Custom_dialog extends DialogFragment implements View.OnClickListener  , View.OnKeyListener  {
 
     ViewPager viewPager ;
 
@@ -55,8 +53,12 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
 
     ImageView imageView_timer , imageView_money ;
 
+    //page 2 , game pads choose :
+    ImageView image_game1, image_game2, image_game3, image_game4;
+    ImageView image_tv1  , image_tv2 , image_tv3 , image_tv4 ,image_tv5 ,image_tv6 ,image_tv7 ,image_tv8 ,image_tv9 ,image_tv10 ;
+
     EditText editText_gamePad , editText_tv_num ;
-    int gamePad , tv_num = 0 ;
+    int gamePad , tv_num = 1 ;
 
     RelativeLayout line_timer , line_money ;
 
@@ -71,8 +73,9 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
     Button btn_next , btn_previous , btn_cancel ;
 
     Fragment1 fragment1 ;
-    Fragment2 fragment2 ;
+    Fragment2 tv_fragment;
     Fragment3 fragment3 ;
+    chooseGamePad_fragment gamePad_fragment ;
 
     public static final String TAG = "=====>";
 
@@ -94,11 +97,14 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
 
         Custom_Adapter adapter = new Custom_Adapter(getChildFragmentManager());
         fragment1 = new Fragment1() ;
-        fragment2 = new Fragment2();
+        tv_fragment = new Fragment2();
         fragment3 = new Fragment3();
+        gamePad_fragment = new chooseGamePad_fragment();
         adapter.addFragment("1" , fragment1 );
-        adapter.addFragment("2" , fragment2 );
-        adapter.addFragment("3" , fragment3 );
+        adapter.addFragment("2" , gamePad_fragment);
+        adapter.addFragment("3" , tv_fragment);
+        adapter.addFragment("4" , fragment3 );
+
 
 
 
@@ -146,32 +152,52 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
                    case 1 :
                        btn_previous.setVisibility(View.VISIBLE);
                        btn_next.setText("NEXT");
-                       editText_gamePad = (EditText) viewPager.getRootView().findViewById(R.id.gamePads);
-                       editText_tv_num = (EditText) viewPager.getRootView().findViewById(R.id.Tv_num);
-                       if (editText_gamePad.getText().toString().trim().equals("")){ editText_gamePad.setText("1");}
-                       editText_gamePad.setOnTouchListener(new View.OnTouchListener() {
-                            @Override
-                            public boolean onTouch(View view, MotionEvent motionEvent) {
-                                editText_gamePad.setText("");
-                                return false;
-                            }
-                        });
 
-                       editText_tv_num.setOnTouchListener(new View.OnTouchListener() {
-                           @Override
-                           public boolean onTouch(View view, MotionEvent motionEvent) {
-                               editText_tv_num.setHint("");
-                               if (editText_gamePad.getText().toString().trim().equals("")){ editText_gamePad.setText("1");}
-                               return false;
-                           }
-                       });
+                       image_game1 = viewPager.getRootView().findViewById(R.id.gamepad1);
+                       image_game2 = viewPager.getRootView().findViewById(R.id.gamepad2);
+                       image_game3 = viewPager.getRootView().findViewById(R.id.gamepad3);
+                       image_game4 = viewPager.getRootView().findViewById(R.id.gamepad4);
 
-                       editText_tv_num.setOnKeyListener(Custom_dialog.this);
-                       editText_gamePad.setOnKeyListener(Custom_dialog.this);
+                       image_game1.setOnClickListener(Custom_dialog.this);
+                       image_game2.setOnClickListener(Custom_dialog.this);
+                       image_game3.setOnClickListener(Custom_dialog.this);
+                       image_game4.setOnClickListener(Custom_dialog.this);
+
 
                        break;
 
+
                    case 2 :
+                       btn_previous.setVisibility(View.VISIBLE);
+                       btn_next.setText("NEXT");
+
+                       image_tv1 = viewPager.getRootView().findViewById(R.id.tv1);
+                       image_tv2 = viewPager.getRootView().findViewById(R.id.tv2);
+                       image_tv3 = viewPager.getRootView().findViewById(R.id.tv3);
+                       image_tv4 = viewPager.getRootView().findViewById(R.id.tv4);
+                       image_tv5 = viewPager.getRootView().findViewById(R.id.tv5);
+                       image_tv6 = viewPager.getRootView().findViewById(R.id.tv6);
+                       image_tv7 = viewPager.getRootView().findViewById(R.id.tv7);
+                       image_tv8 = viewPager.getRootView().findViewById(R.id.tv8);
+                       image_tv9 = viewPager.getRootView().findViewById(R.id.tv9);
+                       image_tv10 = viewPager.getRootView().findViewById(R.id.tv10);
+
+
+                       image_tv1.setOnClickListener(Custom_dialog.this);
+                       image_tv2.setOnClickListener(Custom_dialog.this);
+                       image_tv3.setOnClickListener(Custom_dialog.this);
+                       image_tv4.setOnClickListener(Custom_dialog.this);
+                       image_tv5.setOnClickListener(Custom_dialog.this);
+                       image_tv6.setOnClickListener(Custom_dialog.this);
+                       image_tv7.setOnClickListener(Custom_dialog.this);
+                       image_tv8.setOnClickListener(Custom_dialog.this);
+                       image_tv9.setOnClickListener(Custom_dialog.this);
+                       image_tv10.setOnClickListener(Custom_dialog.this);
+
+
+                       break;
+
+                   case 3 :
                        btn_previous.setVisibility(View.VISIBLE);
                        btn_next.setText("Active");
 
@@ -299,14 +325,14 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
                         break;
 
                     case 2 :
+                        viewPager.setCurrentItem(viewPager.getCurrentItem()+1);
+                        break;
+
+                    case 3 :
 
                         if (editText_money.getText().toString().trim().equals("") || editText_timer.getText().toString().trim().equals("")) {
                             viewPager.setCurrentItem(2);
                             editText_money.setError("Required");
-                        }else if (tv_num == 0 ){
-                            viewPager.setCurrentItem(1);
-                            editText_tv_num = (EditText) viewPager.getRootView().findViewById(R.id.Tv_num);
-                            editText_tv_num.setError("Required");
                         }else {
                             dismiss();
                             SendDataUser(time , money , GamePad );
@@ -334,6 +360,10 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
                         viewPager.setCurrentItem(viewPager.getCurrentItem()- 1);
                         break;
 
+                    case 3 :
+                        viewPager.setCurrentItem(viewPager.getCurrentItem()- 1);
+                        break;
+
 
                 }
 
@@ -342,6 +372,182 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
 
             case R.id.btn_cancel :
                 dismiss();
+                break;
+
+            case R.id.gamepad1 :
+                image_game1.setImageResource(R.drawable.ic_looks_one_green_24dp);
+                image_game2.setImageResource(R.drawable.ic_looks_two_red_24dp);
+                image_game3.setImageResource(R.drawable.ic_looks_3_red_24dp);
+                image_game4.setImageResource(R.drawable.ic_looks_4_red_24dp);
+
+                gamePad  = 1 ;
+                break;
+
+            case R.id.gamepad2 :
+                image_game1.setImageResource(R.drawable.ic_looks_one_red_24dp);
+                image_game2.setImageResource(R.drawable.ic_looks_two_green_24dp);
+                image_game3.setImageResource(R.drawable.ic_looks_3_red_24dp);
+                image_game4.setImageResource(R.drawable.ic_looks_4_red_24dp);
+
+                gamePad  = 2 ;
+                break;
+
+            case R.id.gamepad3 :
+                image_game1.setImageResource(R.drawable.ic_looks_one_red_24dp);
+                image_game2.setImageResource(R.drawable.ic_looks_two_red_24dp);
+                image_game3.setImageResource(R.drawable.ic_looks_3_green_24dp);
+                image_game4.setImageResource(R.drawable.ic_looks_4_red_24dp);
+                gamePad  = 3 ;
+                break;
+
+            case R.id.gamepad4 :
+                image_game1.setImageResource(R.drawable.ic_looks_one_red_24dp);
+                image_game2.setImageResource(R.drawable.ic_looks_two_red_24dp);
+                image_game3.setImageResource(R.drawable.ic_looks_3_red_24dp);
+                image_game4.setImageResource(R.drawable.ic_looks_4_green_24dp);
+                gamePad  = 4 ;
+                break;
+
+
+            case R.id.tv1 :
+                image_tv1.setImageResource(R.drawable.ic_one);
+                image_tv2.setImageResource(R.drawable.ic_two_red);
+                image_tv3.setImageResource(R.drawable.ic_three_red);
+                image_tv4.setImageResource(R.drawable.ic_four_red);
+                image_tv5.setImageResource(R.drawable.ic_five_red);
+                image_tv6.setImageResource(R.drawable.ic_six_red);
+                image_tv7.setImageResource(R.drawable.ic_seven_red);
+                image_tv8.setImageResource(R.drawable.ic_eight_red);
+                image_tv9.setImageResource(R.drawable.ic_nine_red);
+                image_tv10.setImageResource(R.drawable.ic_ten);
+                tv_num = 1 ;
+
+                break;
+
+            case R.id.tv2 :
+                image_tv1.setImageResource(R.drawable.ic_one_red);
+                image_tv2.setImageResource(R.drawable.ic_two);
+                image_tv3.setImageResource(R.drawable.ic_three_red);
+                image_tv4.setImageResource(R.drawable.ic_four_red);
+                image_tv5.setImageResource(R.drawable.ic_five_red);
+                image_tv6.setImageResource(R.drawable.ic_six_red);
+                image_tv7.setImageResource(R.drawable.ic_seven_red);
+                image_tv8.setImageResource(R.drawable.ic_eight_red);
+                image_tv9.setImageResource(R.drawable.ic_nine_red);
+                image_tv10.setImageResource(R.drawable.ic_ten);
+                tv_num = 2 ;
+                break;
+
+            case R.id.tv3 :
+                image_tv1.setImageResource(R.drawable.ic_one_red);
+                image_tv2.setImageResource(R.drawable.ic_two_red);
+                image_tv3.setImageResource(R.drawable.ic_three);
+                image_tv4.setImageResource(R.drawable.ic_four_red);
+                image_tv5.setImageResource(R.drawable.ic_five_red);
+                image_tv6.setImageResource(R.drawable.ic_six_red);
+                image_tv7.setImageResource(R.drawable.ic_seven_red);
+                image_tv8.setImageResource(R.drawable.ic_eight_red);
+                image_tv9.setImageResource(R.drawable.ic_nine_red);
+                image_tv10.setImageResource(R.drawable.ic_ten);
+                tv_num = 3 ;
+                break;
+
+            case R.id.tv4 :
+                image_tv1.setImageResource(R.drawable.ic_one_red);
+                image_tv2.setImageResource(R.drawable.ic_two_red);
+                image_tv3.setImageResource(R.drawable.ic_three_red);
+                image_tv4.setImageResource(R.drawable.ic_four);
+                image_tv5.setImageResource(R.drawable.ic_five_red);
+                image_tv6.setImageResource(R.drawable.ic_six_red);
+                image_tv7.setImageResource(R.drawable.ic_seven_red);
+                image_tv8.setImageResource(R.drawable.ic_eight_red);
+                image_tv9.setImageResource(R.drawable.ic_nine_red);
+                image_tv10.setImageResource(R.drawable.ic_ten);
+                tv_num = 4 ;
+                break;
+
+            case R.id.tv5 :
+                image_tv1.setImageResource(R.drawable.ic_one_red);
+                image_tv2.setImageResource(R.drawable.ic_two_red);
+                image_tv3.setImageResource(R.drawable.ic_three_red);
+                image_tv4.setImageResource(R.drawable.ic_four_red);
+                image_tv5.setImageResource(R.drawable.ic_five);
+                image_tv6.setImageResource(R.drawable.ic_six_red);
+                image_tv7.setImageResource(R.drawable.ic_seven_red);
+                image_tv8.setImageResource(R.drawable.ic_eight_red);
+                image_tv9.setImageResource(R.drawable.ic_nine_red);
+                image_tv10.setImageResource(R.drawable.ic_ten);
+                tv_num = 5 ;
+                break;
+
+            case R.id.tv6 :
+                image_tv1.setImageResource(R.drawable.ic_one_red);
+                image_tv2.setImageResource(R.drawable.ic_two_red);
+                image_tv3.setImageResource(R.drawable.ic_three_red);
+                image_tv4.setImageResource(R.drawable.ic_four_red);
+                image_tv5.setImageResource(R.drawable.ic_five_red);
+                image_tv6.setImageResource(R.drawable.ic_six);
+                image_tv7.setImageResource(R.drawable.ic_seven_red);
+                image_tv8.setImageResource(R.drawable.ic_eight_red);
+                image_tv9.setImageResource(R.drawable.ic_nine_red);
+                image_tv10.setImageResource(R.drawable.ic_ten);
+                tv_num = 1 ;
+                break;
+
+            case R.id.tv7 :
+                image_tv1.setImageResource(R.drawable.ic_one_red);
+                image_tv2.setImageResource(R.drawable.ic_two_red);
+                image_tv3.setImageResource(R.drawable.ic_three_red);
+                image_tv4.setImageResource(R.drawable.ic_four_red);
+                image_tv5.setImageResource(R.drawable.ic_five_red);
+                image_tv6.setImageResource(R.drawable.ic_six_red);
+                image_tv7.setImageResource(R.drawable.ic_seven);
+                image_tv8.setImageResource(R.drawable.ic_eight_red);
+                image_tv9.setImageResource(R.drawable.ic_nine_red);
+                image_tv10.setImageResource(R.drawable.ic_ten);
+                tv_num = 1 ;
+                break;
+
+            case R.id.tv8 :
+                image_tv1.setImageResource(R.drawable.ic_one_red);
+                image_tv2.setImageResource(R.drawable.ic_two_red);
+                image_tv3.setImageResource(R.drawable.ic_three_red);
+                image_tv4.setImageResource(R.drawable.ic_four_red);
+                image_tv5.setImageResource(R.drawable.ic_five_red);
+                image_tv6.setImageResource(R.drawable.ic_six_red);
+                image_tv7.setImageResource(R.drawable.ic_seven_red);
+                image_tv8.setImageResource(R.drawable.ic_eight);
+                image_tv9.setImageResource(R.drawable.ic_nine_red);
+                image_tv10.setImageResource(R.drawable.ic_ten);
+                tv_num = 1 ;
+                break;
+
+            case R.id.tv9 :
+                image_tv1.setImageResource(R.drawable.ic_one_red);
+                image_tv2.setImageResource(R.drawable.ic_two_red);
+                image_tv3.setImageResource(R.drawable.ic_three_red);
+                image_tv4.setImageResource(R.drawable.ic_four_red);
+                image_tv5.setImageResource(R.drawable.ic_five_red);
+                image_tv6.setImageResource(R.drawable.ic_six_red);
+                image_tv7.setImageResource(R.drawable.ic_seven_red);
+                image_tv8.setImageResource(R.drawable.ic_eight_red);
+                image_tv9.setImageResource(R.drawable.ic_nine);
+                image_tv10.setImageResource(R.drawable.ic_ten);
+                tv_num = 1 ;
+                break;
+
+            case R.id.tv10 :
+                image_tv1.setImageResource(R.drawable.ic_one_red);
+                image_tv2.setImageResource(R.drawable.ic_two_red);
+                image_tv3.setImageResource(R.drawable.ic_three_red);
+                image_tv4.setImageResource(R.drawable.ic_four_red);
+                image_tv5.setImageResource(R.drawable.ic_five_red);
+                image_tv6.setImageResource(R.drawable.ic_six_red);
+                image_tv7.setImageResource(R.drawable.ic_seven_red);
+                image_tv8.setImageResource(R.drawable.ic_eight_red);
+                image_tv9.setImageResource(R.drawable.ic_nine_red);
+                image_tv10.setImageResource(R.drawable.ic_ten_green);
+                tv_num = 10 ;
                 break;
 
         }
@@ -444,31 +650,11 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
                 }
                 break;
 
-            case R.id.Tv_num :
-                if (!editText_tv_num.getText().toString().trim().equals("")){
-                    tv_num = Integer.valueOf(editText_tv_num.getText().toString()) ;
-                }
-                break;
-
-            case  R.id.gamePads :
-                if (editText_gamePad != null){
-                    if (!editText_gamePad.getText().toString().trim().equals("")){
-                        GamePad =  Integer.parseInt(editText_gamePad.getText().toString());
-                        if (editText_money != null){
-                            editText_money.setText("");
-                            editText_timer.setText("");
-                        }
-                    }
-
-
-
-                }
-                break;
-
         }
 
         return false;
     }
+
 
 
 }
