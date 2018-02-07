@@ -10,6 +10,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -55,6 +57,7 @@ import com.geniusforapp.achievementunlocked.AchievementUnlocked;
 import com.geniusforapp.achievementunlocked.entity.AchievementData;
 import com.geniusforapp.achievementunlocked.viewes.AchievementIconView;
 import com.western.game.center.westerngamecenter.ActiveUsers.ActiveUsers_Recycler_Adapter;
+import com.western.game.center.westerngamecenter.ActiveUsers.Active_User_Base;
 import com.western.game.center.westerngamecenter.App;
 import com.western.game.center.westerngamecenter.DataBase.DataBase_Operation;
 import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Add_new_User.Add_user_dialog;
@@ -74,6 +77,8 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
     private static final String KEY_TEXT_REPLY = "key_text_reply";
 
     public static final String TAG = "===>" ;
+
+    NotificationManager mNotificationManager ;
 
     private BroadcastReceiver receiver ;
 
@@ -370,21 +375,23 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
 
     private void onFinish_notification (){
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext());
-        mBuilder.setSmallIcon(R.drawable.ic_logo_western_web2);
-        mBuilder.setContentTitle("Notification Alert, Click Me!");
+        Bitmap icon = BitmapFactory.decodeResource(getContext().getResources(),
+                R.mipmap.ic_logo_western);
+        mBuilder.setLargeIcon(icon);
+        mBuilder.setSmallIcon(R.drawable.ic_logo_western_web , 5);
+        mBuilder.setContentTitle("Times Up !!!!");
         mBuilder.setOngoing(true);
-        mBuilder.setLights(Color.RED, 1000, 10000);
+       // mBuilder.setLights(Color.RED, 1000, 1000);
         long[] pattern2 = {500,500,500,500,500} ;
-        if (Build.VERSION.SDK_INT >= 21) mBuilder.setVibrate(new long[0]);
-        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        mBuilder.setSound(notification , RingtoneManager.TYPE_ALARM );
-        mBuilder.setContentText("Hi, This is Android Notification Detail!");
+       // Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+       // mBuilder.setSound(notification , RingtoneManager.TYPE_ALARM );
+        mBuilder.setContentText("TV Number " + " '5' " + "Is Finished ... !");
         mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
-        mBuilder.setCategory(NotificationCompat.CATEGORY_CALL);
+        mBuilder.setCategory(NotificationCompat.CATEGORY_ALARM);
         mBuilder.mNotification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR ;
-       // mBuilder.setDefaults(NotificationCompat.DEFAULT_ALL);
+        // mBuilder.setDefaults(NotificationCompat.DEFAULT_ALL);
         //mBuilder.setStyle(new NotificationCompat.InboxStyle());
-        //mBuilder.setVibrate(pattern2);
+       // mBuilder.setVibrate(pattern2);
 
         RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY).setLabel("answer me ").build();
 
@@ -403,19 +410,69 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
         // mBuilder.addAction(replyAction);
 
 
-        Intent intent = new Intent("dismissIntent");
-        intent.setAction("dismiss");
-        intent.putExtra("notificationId", 1);
+
+
+        Intent intent = new Intent("Stop_User");
+        intent.putExtra("notificationId", 2);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-       // PendingIntent dismissIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent dismissIntent = PendingIntent.getBroadcast(getContext() , 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        mBuilder.addAction(R.drawable.ic_stop_black_34dp, "Stop User", dismissIntent);
+        mBuilder.setContentIntent(dismissIntent);
 
-        // mBuilder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "DISMISS", dismissIntent);
+        Intent intent2 = new Intent("Extra_Time");
+        intent2.putExtra("notificationId", 1);
+        intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent extra_time = PendingIntent.getBroadcast(getContext() , 150 , intent2 , 0);
+        mBuilder.addAction(R.drawable.ic_fast_forward_black_34dp , "Extra Time", extra_time);
 
 
-        NotificationManager mNotificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, mBuilder.build());
         // mNotificationManager.cancel(this.getIntent().getIntExtra("notificationId" , 1 ));
+
+        receive();
+        getActivity().registerReceiver(receiver , new IntentFilter("Stop_User") );
+        getActivity().registerReceiver(receiver , new IntentFilter("Extra_Time") );
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getActivity().registerReceiver(receiver , new IntentFilter("Stop_User") );
+        getActivity().registerReceiver(receiver , new IntentFilter("Extra_Time") );
+
+    }
+
+    private void receive (){
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                switch (intent.getAction()){
+
+                    case "Stop_User" :
+                        Log.i(TAG, "onReceive:  " + "stop user" );
+                        getActivity().unregisterReceiver(receiver);
+                        mNotificationManager.cancel(1);
+                        break;
+
+                    case "Extra_Time" :
+                        Log.i(TAG, "onReceive: " + "extra time ");
+                        getActivity().unregisterReceiver(receiver);
+                        mNotificationManager.cancel(1);
+                        break;
+                }
+
+            }
+        };
+
+        //LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver , new IntentFilter("Stop_User"));
+    }
+
+
+
 
 
 

@@ -335,10 +335,9 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
                             editText_money.setError("Required");
                         }else {
                             dismiss();
-                            SendDataUser(time , money , GamePad );
+                            SendDataUser(time, money, GamePad);
 
                         }
-
 
 
                         break;
@@ -491,7 +490,7 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
                 image_tv8.setImageResource(R.drawable.ic_eight_red);
                 image_tv9.setImageResource(R.drawable.ic_nine_red);
                 image_tv10.setImageResource(R.drawable.ic_ten);
-                tv_num = 1 ;
+                tv_num = 6 ;
                 break;
 
             case R.id.tv7 :
@@ -505,7 +504,7 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
                 image_tv8.setImageResource(R.drawable.ic_eight_red);
                 image_tv9.setImageResource(R.drawable.ic_nine_red);
                 image_tv10.setImageResource(R.drawable.ic_ten);
-                tv_num = 1 ;
+                tv_num = 7 ;
                 break;
 
             case R.id.tv8 :
@@ -519,7 +518,7 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
                 image_tv8.setImageResource(R.drawable.ic_eight);
                 image_tv9.setImageResource(R.drawable.ic_nine_red);
                 image_tv10.setImageResource(R.drawable.ic_ten);
-                tv_num = 1 ;
+                tv_num = 8 ;
                 break;
 
             case R.id.tv9 :
@@ -533,7 +532,7 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
                 image_tv8.setImageResource(R.drawable.ic_eight_red);
                 image_tv9.setImageResource(R.drawable.ic_nine);
                 image_tv10.setImageResource(R.drawable.ic_ten);
-                tv_num = 1 ;
+                tv_num = 9 ;
                 break;
 
             case R.id.tv10 :

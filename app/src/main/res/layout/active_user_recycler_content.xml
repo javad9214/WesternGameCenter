@@ -26,7 +26,8 @@
             android:gravity="left">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1.5"
                 android:layout_height="wrap_content"
                 android:id="@+id/linear_contact"
                 android:layout_centerVertical="true">
@@ -59,7 +60,8 @@
 
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="4"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_gravity="center"
@@ -86,6 +88,29 @@
                     android:layout_marginLeft="20dp"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="0.6"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_tv_black_24dp"
+                        android:layout_marginBottom="2dp"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_height="0dp"
+                        android:id="@+id/tv_num_activated"
+                        android:src="@drawable/ic_one"/>
+
+            </LinearLayout>
 
 
         </LinearLayout>
@@ -104,6 +129,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="#212121"
                     android:text="Left Time : "/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -127,6 +153,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="#212121"
                         android:text="Start Time : "/>
                     <TextView
                         android:layout_width="wrap_content"
@@ -144,6 +171,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="#212121"
                         android:text="End Time : "/>
                     <TextView
                         android:layout_width="wrap_content"
@@ -152,37 +180,45 @@
                         android:id="@+id/endTime"/>
                 </LinearLayout>
             </RelativeLayout>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/drop_down_btn_active_users"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/click_event"
-                android:src="@drawable/ic_keyboard_arrow_down_black_20dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/releaseMoney"
-                android:layout_marginTop="5dp"
-                android:layout_gravity="center"
-                android:textColor="#0e7609"
-                android:text="Released Money : 8000 T"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/joystickNum"
-                android:layout_marginTop="5dp"
-                android:layout_gravity="center"
-                android:textColor="#b607b9"
-                android:text="Number Of Joystick : 2"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="#000"
+                android:textSize="16sp"
+                android:text="Extra Time  : "/>
+
+            <Chronometer
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:textSize="22sp"
+                android:textColor="#840606"
+               android:layout_gravity="center"
+                android:gravity="center"
+                android:id="@+id/chorno_extra"/>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             android:background="#cecbcb"></LinearLayout>
 
         <LinearLayout

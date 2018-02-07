@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="chronometerpersist-1.0.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.android/build-cache/553784b4b981e1873960a640e53546cd8ddd8faa/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/553784b4b981e1873960a640e53546cd8ddd8faa/output/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.minimize.library/chronometerpersist/1.0.0/412ce27de1d45c3e076c4507e14d64aa002c06d9/chronometerpersist-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

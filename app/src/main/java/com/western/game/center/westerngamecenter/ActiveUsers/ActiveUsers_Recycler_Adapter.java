@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.RemoteInput;
@@ -18,11 +19,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Choreographer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,7 +41,7 @@ import com.western.game.center.westerngamecenter.User_Constant.ActiveUser;
 
 import java.util.List;
 
-public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUsers_Recycler_Adapter.Recycler_viewHolder> implements View.OnClickListener {
+public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUsers_Recycler_Adapter.Recycler_viewHolder> {
 
 
 
@@ -85,12 +88,9 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
         holder1.tx_LastName.setText(String.valueOf(activeUser.LastName));
         holder1.tx_startTime.setText(String.valueOf(activeUser.startTime));
         holder1.tx_endTime.setText(String.valueOf(activeUser.endTime));
-        holder1.tx_money.setText("Money : " + String.valueOf(activeUser.money) + " T");
         holder1.tx_leftTime.setText(String.valueOf((long) activeUser.Remaining_Time /1000));
-        holder1.tx_numJoystick.setText( "GamePads : " + String.valueOf(activeUser.NumJoyStick));
-        holder1.tx_money.setVisibility(View.GONE);
-        holder1.tx_numJoystick.setVisibility(View.GONE);
-
+        set_tv_image(holder1 , activeUser.Tv_Num);
+        Log.i(TAG, "onBindViewHolder: " + activeUser.NumJoyStick + " money : " + activeUser.Tv_Num);
 
 
         if (activeUser.isRunning){
@@ -110,6 +110,48 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
 
 
+    private void set_tv_image ( Recycler_viewHolder  holder   , int num){
+
+        switch (num) {
+
+            case 2 :
+                holder.tv_num_activated.setImageResource(R.drawable.ic_two);
+                break;
+
+            case 3 :
+                holder.tv_num_activated.setImageResource(R.drawable.ic_three);
+                break;
+
+            case 4 :
+                holder.tv_num_activated.setImageResource(R.drawable.ic_four);
+                break;
+
+            case 5 :
+                holder.tv_num_activated.setImageResource(R.drawable.ic_five);
+                break;
+
+            case 6 :
+                holder.tv_num_activated.setImageResource(R.drawable.ic_six);
+                break;
+
+            case 7 :
+                holder.tv_num_activated.setImageResource(R.drawable.ic_seven);
+                break;
+
+            case 8 :
+                holder.tv_num_activated.setImageResource(R.drawable.ic_eight);
+                break;
+
+            case 9 :
+                holder.tv_num_activated.setImageResource(R.drawable.ic_nine);
+                break;
+
+            case 10 :
+                holder.tv_num_activated.setImageResource(R.drawable.ic_ten_green);
+                break;
+        }
+    }
+
     public void delete(int position , ActiveUsers_Recycler_Adapter adapter){
         dataList.remove(position);
         adapter.notifyItemRemoved(position);
@@ -121,46 +163,22 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
         return dataList.size() ;
     }
 
-    @Override
-    public void onClick(View v) {
-
-
-        switch (v.getId()){
-
-            case  R.id.drop_down_btn_active_users :
-
-
-
-                if (holder2.flag_dropdown){
-                    holder2.tx_numJoystick.setVisibility(View.GONE);
-                    holder2.tx_money.setVisibility(View.GONE);
-                    holder2.drop_down.setImageResource(R.drawable.ic_keyboard_arrow_down_black_20dp);
-                    holder2.flag_dropdown = false ;
-                }else {
-                    holder2.tx_numJoystick.setVisibility(View.VISIBLE);
-                    holder2.tx_money.setVisibility(View.VISIBLE);
-                    holder2.drop_down.setImageResource(R.drawable.ic_keyboard_arrow_up_black_20dp);
-                    holder2.flag_dropdown = true ;
-                }
-
-                break;
-
-        }
-    }
 
     public static class Recycler_viewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-       TextView tx_Name,tx_LastName , tx_leftTime , tx_startTime , tx_endTime  , tx_money , tx_numJoystick ;
+        TextView tx_Name,tx_LastName , tx_leftTime , tx_startTime , tx_endTime   ;
         ProgressBar progressBar ;
         ImageView drop_down ;
         Button start_pause , stop ;
-        ImageView delete ;
+        ImageView delete  , tv_num_activated ;
 
 
 
         View view ;
 
         Snackbar mySnackbar ;
+
+        Chronometer chronometer ;
 
         Context context ;
 
@@ -179,8 +197,10 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
         TimerService timerService ;
 
+        long fa ;
 
         boolean flag_dropdown = false  , start_flag = false  , pause_flag = false   , resume_flag = false , stop_flag = false   , pause_new_flag = false ;
+        boolean chorno = false ;
 
 
         public Recycler_viewHolder(View itemView , final List<ActiveUser> list , Context context , View view , Activity activity ) {
@@ -202,12 +222,15 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
             tx_leftTime = (TextView) itemView.findViewById(R.id.leftTime);
             tx_startTime = (TextView) itemView.findViewById(R.id.startTime);
             tx_endTime = (TextView) itemView.findViewById(R.id.endTime);
-            tx_money = (TextView) itemView.findViewById(R.id.releaseMoney);
-            tx_numJoystick = (TextView) itemView.findViewById(R.id.joystickNum);
+
+            chronometer = (Chronometer) itemView.findViewById(R.id.chorno_extra);
+            chronometer.setBase(SystemClock.elapsedRealtime());
+
+
+
+            tv_num_activated = itemView.findViewById(R.id.tv_num_activated);
 
             progressBar = (ProgressBar) itemView.findViewById(R.id.active_user_progressBar);
-
-            drop_down = (ImageView) itemView.findViewById(R.id.drop_down_btn_active_users);
 
             start_pause = (Button) itemView.findViewById(R.id.btn_start_pause_user);
             stop = itemView.findViewById(R.id.btn_stop_user);
@@ -219,7 +242,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
 
 
-            drop_down.setOnClickListener(this);
+            stop.setOnClickListener(this);
             start_pause.setOnClickListener(this);
             delete.setOnClickListener(this);
 
@@ -237,21 +260,6 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
 
             switch (v.getId()) {
-
-                case R.id.drop_down_btn_active_users:
-                    if (flag_dropdown){
-                        tx_numJoystick.setVisibility(View.GONE);
-                        tx_money.setVisibility(View.GONE);
-                        drop_down.setImageResource(R.drawable.ic_keyboard_arrow_down_black_20dp);
-                        flag_dropdown = false ;
-                    }else {
-                        tx_numJoystick.setVisibility(View.VISIBLE);
-                        tx_money.setVisibility(View.VISIBLE);
-                        drop_down.setImageResource(R.drawable.ic_keyboard_arrow_up_black_20dp);
-                        flag_dropdown = true ;
-                    }
-                    break;
-
 
                 case R.id.btn_delete_active_user :
 
@@ -361,6 +369,18 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
                     }
 
+                    break;
+
+                case R.id.btn_stop_user :
+
+                    if (!chorno){
+                        chronometer.start();
+                        chorno = true ;
+
+                    }else {
+                        chronometer.stop();
+                        chorno = false ;
+                    }
                     break;
 
             }
