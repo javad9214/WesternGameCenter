@@ -378,9 +378,9 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
         Bitmap icon = BitmapFactory.decodeResource(getContext().getResources(),
                 R.mipmap.ic_logo_western);
         mBuilder.setLargeIcon(icon);
-        mBuilder.setSmallIcon(R.drawable.ic_logo_western_web , 5);
+        mBuilder.setSmallIcon(R.mipmap.ic_logo_western , 5);
         mBuilder.setContentTitle("Times Up !!!!");
-        mBuilder.setOngoing(true);
+        mBuilder.setOngoing(false);
        // mBuilder.setLights(Color.RED, 1000, 1000);
         long[] pattern2 = {500,500,500,500,500} ;
        // Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);

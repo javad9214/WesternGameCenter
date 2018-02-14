@@ -1,39 +1,344 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="500dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="500dp"
+    android:minHeight="900dp">
 
 
 
-
-
-
-        <android.support.design.widget.TabLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tab_profile_dialog">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        </android.support.design.widget.TabLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="7"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_margin="16dp">
 
-        <android.support.v4.view.ViewPager
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:id="@+id/view_pager">
+                        <android.support.v7.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:transitionName="transition_photo"
+                            android:layout_margin="5dp"
+                            app:cardCornerRadius="70dp"
+                            app:cardElevation="@dimen/cardview_default_elevation">
 
-        </android.support.v4.view.ViewPager>
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:id="@+id/profile_image"
+                                    android:layout_gravity="center"
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    android:src="@drawable/western_logo"
+                                    app:civ_border_width="3dp"
+                                    app:civ_border_overlay="true"
+                                    app:civ_border_color="#FF000000"/>
 
 
-        <TextView
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:text="Done"
-            android:gravity="right"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="16dp"
-            android:textColor="#11790a"/>
+                        </android.support.v7.widget.CardView>
+
+
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.5"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            app:srcCompat ="@drawable/ic_account_circle_black_24dp"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="left"
+                            android:text="NAME : "
+                            android:textSize="16sp"
+                            android:layout_marginRight="10dp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1.5"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="right"
+                            android:id="@+id/first_name"
+                            android:text="Mohammad Javad"
+                            android:textColor="#000"
+                            android:textSize="18sp"
+                            android:layout_marginRight="10dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.5"
+                            android:layout_height="wrap_content"
+                            app:srcCompat ="@drawable/ic_phone_black_40dp"/>
+
+
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="left"
+                                    android:text="PHONE :"
+                                    android:textSize="16sp"
+                                    android:layout_marginRight="10dp" />
+
+
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1.5"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="right"
+                            android:id="@+id/phone_pro"
+                            android:text="+98 9390091027"
+                            android:textColor="#000"
+                            android:textSize="18sp"
+                            android:layout_marginRight="10dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.5"
+                            android:layout_height="wrap_content"
+                            app:srcCompat ="@drawable/ic_date_range_black_24dp"/>
+
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1.4"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="left"
+                            android:text="DATE OF JOIN :"
+                            android:textSize="15sp"
+                            android:layout_marginRight="10dp" />
+
+
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1.1"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="right"
+                            android:id="@+id/date_pro"
+                            android:text="1396/4/2"
+                            android:textColor="#000"
+                            android:textSize="18sp"
+                            android:layout_marginRight="10dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.5"
+                            android:layout_height="wrap_content"
+                            app:srcCompat ="@drawable/ic_timer_gray_30dp"/>
+
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1.5"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="left"
+                            android:text="Totall Play Time :"
+                            android:textSize="16sp"
+                            android:layout_marginRight="10dp" />
+
+
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="right"
+                            android:id="@+id/play_time_pro"
+                            android:text="32 hrs  15 min"
+                            android:textColor="#000"
+                            android:textSize="18sp"
+                            android:layout_marginRight="10dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.5"
+                            android:layout_height="wrap_content"
+                            app:srcCompat ="@drawable/ic_monetization_on_gray_30dp"/>
+
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1.2"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="left"
+                            android:text="Total Money :"
+                            android:textSize="16sp"
+                            android:layout_marginRight="10dp" />
+
+
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1.3"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="right"
+                            android:id="@+id/total_money_pro"
+                            android:text="350,000 IRR"
+                            android:textColor="#000"
+                            android:textSize="18sp"
+                            android:layout_marginRight="10dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_weight="0.5"
+                            android:layout_height="wrap_content"
+                            app:srcCompat ="@drawable/ic_attach_money_gray_30dp"/>
+
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1.2"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="left"
+                            android:text="Left Money :"
+                            android:textSize="16sp"
+                            android:layout_marginRight="10dp" />
+
+
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1.3"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="right"
+                            android:id="@+id/left_money_pro"
+                            android:text="4,000 IRR"
+                            android:textColor="#970505"
+                            android:textSize="18sp"
+                            android:layout_marginRight="10dp" />
+
+
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:layout_gravity="center"
+                            android:id="@+id/btn_done"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_done_black_50dp"
+                            app:civ_border_width="3dp"
+                            app:civ_border_overlay="true"
+                            app:civ_border_color="#31bf06"/>
+
+
+
+
+
+                </LinearLayout>
+
+        </LinearLayout>
+
+
+
 
 
 

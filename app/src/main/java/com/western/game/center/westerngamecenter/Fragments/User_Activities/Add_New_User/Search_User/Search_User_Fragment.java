@@ -43,6 +43,7 @@ import com.western.game.center.westerngamecenter.App;
 import com.western.game.center.westerngamecenter.DataBase.DataBase_Operation;
 import com.western.game.center.westerngamecenter.Fragments.Main_Active_User_Fragment;
 import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Search_User.Active_dialog_fragment.Custom_dialog;
+import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Search_User.Profile_fragment.Profile_dialog_fragment;
 import com.western.game.center.westerngamecenter.R;
 import com.western.game.center.westerngamecenter.Tools.OnSwipeTouchListener;
 import com.western.game.center.westerngamecenter.Tools.RecyclerItemClickListener;
@@ -389,6 +390,16 @@ public class Search_User_Fragment extends Fragment {
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 return true ;
+
+            case R.id.action_user_profile :
+                if (position_list.size() == 1){
+
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    transaction.addToBackStack(null);
+                    Profile_dialog_fragment profile_dialog_fragment = Profile_dialog_fragment.newInstance(userArrayList.get( position_list.get(0)).UID);
+                    profile_dialog_fragment.show(transaction, "dialog");
+                }
+                break;
 
 
             case R.id.action_delete :

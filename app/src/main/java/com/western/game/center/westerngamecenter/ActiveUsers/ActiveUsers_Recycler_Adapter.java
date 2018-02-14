@@ -9,6 +9,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.SystemClock;
@@ -40,6 +41,10 @@ import com.western.game.center.westerngamecenter.Time.Timer;
 import com.western.game.center.westerngamecenter.User_Constant.ActiveUser;
 
 import java.util.List;
+
+import library.minimize.com.chronometerpersist.ChronometerPersist;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUsers_Recycler_Adapter.Recycler_viewHolder> {
 
@@ -90,7 +95,6 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
         holder1.tx_endTime.setText(String.valueOf(activeUser.endTime));
         holder1.tx_leftTime.setText(String.valueOf((long) activeUser.Remaining_Time /1000));
         set_tv_image(holder1 , activeUser.Tv_Num);
-        Log.i(TAG, "onBindViewHolder: " + activeUser.NumJoyStick + " money : " + activeUser.Tv_Num);
 
 
         if (activeUser.isRunning){
@@ -172,7 +176,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
         Button start_pause , stop ;
         ImageView delete  , tv_num_activated ;
 
-
+        ChronometerPersist chronometerPersist ;
 
         View view ;
 
@@ -211,6 +215,8 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
             this.view = view ;
             this.activity = activity ;
 
+            SharedPreferences sharedPreferences = activity.getSharedPreferences("ChronometerSample", MODE_PRIVATE);
+
             timer1 = new Timer[40] ;
             animator1 = new ObjectAnimator[40];
             tag_id = -1 ;
@@ -224,9 +230,11 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
             tx_endTime = (TextView) itemView.findViewById(R.id.endTime);
 
             chronometer = (Chronometer) itemView.findViewById(R.id.chorno_extra);
-            chronometer.setBase(SystemClock.elapsedRealtime());
+            chronometerPersist =
+                    ChronometerPersist.getInstance(chronometer , sharedPreferences);
+            chronometerPersist.hourFormat(true);
 
-
+            chronometerPersist.resumeState();
 
             tv_num_activated = itemView.findViewById(R.id.tv_num_activated);
 
@@ -239,6 +247,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
             mySnackbar = Snackbar.make(view ,"Task Deleted ..." , Snackbar.LENGTH_LONG );
 
             animator = ObjectAnimator.ofInt(progressBar , "progress", 0 , 100);
+
 
 
 
@@ -320,14 +329,12 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
                     if (start_flag){
 
-                        Log.i(TAG, "onClick:  start flag ");
                         pause_flag = true ;
                         start_flag = false ;
                         pause();
 
                     }else if (pause_flag){
 
-                        Log.i(TAG, "onClick:  pause flag ");
 
                         pause_flag = false ;
                         resume_flag = true ;
@@ -336,8 +343,6 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
 
                     }else if (resume_flag){
-
-                        Log.i(TAG, "onClick:  resume flag ");
 
                         pause_flag = true ;
                         resume_flag = false ;
@@ -350,8 +355,6 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
                     } else if (pause_new_flag){
 
-                        Log.i(TAG, "onClick:  pause new flag ");
-
                         pause_flag = false ;
                         resume_flag = true ;
                         pause_new_flag = false ;
@@ -361,8 +364,6 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
 
                     } else {
-
-                        Log.i(TAG, "onClick:  else ");
 
                         start_flag = true ;
                         start_begin();
@@ -374,7 +375,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
                 case R.id.btn_stop_user :
 
                     if (!chorno){
-                        chronometer.start();
+                        chronometerPersist.startChronometer();
                         chorno = true ;
 
                     }else {
