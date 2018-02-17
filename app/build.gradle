@@ -44,5 +44,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.geniusforapp.achievementunlocked:achievement:0.0.1'
     compile 'com.minimize.library:chronometerpersist:1.0.0'
+    compile 'com.github.dmytrodanylyk:android-morphing-button:98a4986e56' // commit hash
     testCompile 'junit:junit:4.12'
 }

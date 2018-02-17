@@ -49,7 +49,7 @@ public class Active_User_Base extends AppCompatActivity implements RadioGroup.On
 
 
     public void attachFragment(){
-        main_active_user_fragment = (Main_Active_User_Fragment) getSupportFragmentManager().findFragmentByTag("main_active_user_fragment");
+       // main_active_user_fragment = (Main_Active_User_Fragment) getSupportFragmentManager().findFragmentByTag("main_active_user_fragment");
 
 
         list = new ArrayList<>();

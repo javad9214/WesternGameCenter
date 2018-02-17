@@ -29,7 +29,7 @@ public class DB_Constants {
                             LEFT_MONEY + " real ," +
                             DATE + " text ," +
                             NAME + " text ," +
-                            PHONE + " real " +
+                            PHONE + " text " +
                             ");";
 
 

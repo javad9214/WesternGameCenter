@@ -167,9 +167,9 @@ public class Add_user_dialog extends DialogFragment implements View.OnClickListe
             user.Name = editText_firstName.getText().toString();
             if (!editText_LastName.getText().toString().trim().equals("")){
                 if (!editText_phone.getText().toString().trim().equals("")){
-                    user.Phone =  Long.parseLong(editText_phone.getText().toString());
+                    user.Phone =  editText_phone.getText().toString() ;
                 }else {
-                    user.Phone = 0 ;
+                    user.Phone = "00" ;
                 }
                 user.LastName = editText_LastName.getText().toString();
                 user.TotalMoney = 0 ;

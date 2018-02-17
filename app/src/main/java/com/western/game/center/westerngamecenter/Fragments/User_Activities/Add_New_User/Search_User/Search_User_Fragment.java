@@ -43,6 +43,7 @@ import com.western.game.center.westerngamecenter.App;
 import com.western.game.center.westerngamecenter.DataBase.DataBase_Operation;
 import com.western.game.center.westerngamecenter.Fragments.Main_Active_User_Fragment;
 import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Search_User.Active_dialog_fragment.Custom_dialog;
+import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Search_User.EditFragment.EditFragment;
 import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Search_User.Profile_fragment.Profile_dialog_fragment;
 import com.western.game.center.westerngamecenter.R;
 import com.western.game.center.westerngamecenter.Tools.OnSwipeTouchListener;
@@ -235,14 +236,14 @@ public class Search_User_Fragment extends Fragment {
                             if (position_list.get(i) == position){
                                 isActive = true ;
                                 if (selectedUser == 1){
-                                    imageView_selected_user.setImageResource(R.drawable.ic_account_circle_black_50dp);
+                                    imageView_selected_user.setImageResource(R.mipmap.ic_logo_western);
                                     textView_Selected_User.setText(String.valueOf(selectedUser));
                                     position_list.clear();
                                     isLongClicked = false ;
                                     change_toolbar(false);
                                 }else {
                                     selectedUser -- ;
-                                    imageView_selected_user.setImageResource(R.drawable.ic_account_circle_black_50dp);
+                                    imageView_selected_user.setImageResource(R.mipmap.ic_logo_western);
                                     textView_Selected_User.setText(String.valueOf(selectedUser));
                                     position_list.remove(i);
                                 }
@@ -404,9 +405,30 @@ public class Search_User_Fragment extends Fragment {
 
             case R.id.action_delete :
 
+
+
+                    for (int i = 0 ; i < position_list.size() ; i++){
+                         userArrayList.remove(position_list.get(i));
+                         adapter.notifyItemRemoved(position_list.get(i));
+                        db.Delete_User(userArrayList.get(position_list.get(i)));
+                    }
+
+//                    userArrayList.remove(position_list.get(0));
+//                    adapter.notifyItemRemoved(position_list.get(0));
+
+
+
                 break;
 
             case R.id.action_edit :
+
+                if (position_list.size() == 1){
+
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    transaction.addToBackStack(null);
+                    EditFragment editFragment = EditFragment.newInstance(userArrayList.get( position_list.get(0)).UID);
+                    editFragment.show(transaction, "dialog");
+                }
 
                 break;
         }

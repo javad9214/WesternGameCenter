@@ -195,7 +195,7 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
 
             case R.id.action_settings :
 
-
+                remove(0);
                 onFinish_notification();
 
                 break;
@@ -263,7 +263,7 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
         DataBase_Operation db = App.getDataBaseOperation();
         list = db.Show_Active_user();
         linearLayout_main_page_empty.setVisibility(View.INVISIBLE);
-        adapter = new ActiveUsers_Recycler_Adapter(list, getContext(), view1, getActivity());
+        adapter = new ActiveUsers_Recycler_Adapter(list, getContext(), view1, getActivity() , adapter );
 
         recyclerView.setAdapter(adapter);
         GridLayoutManager manager = new GridLayoutManager(getContext(), 1);
@@ -469,6 +469,11 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
         };
 
         //LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver , new IntentFilter("Stop_User"));
+    }
+
+    public void remove(int position) {
+         list.remove(position);
+         adapter.notifyItemRemoved(position);
     }
 
 

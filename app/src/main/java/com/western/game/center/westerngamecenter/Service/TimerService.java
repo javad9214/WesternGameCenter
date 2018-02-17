@@ -8,6 +8,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.IBinder;
 import android.support.v4.app.RemoteInput;
@@ -34,6 +36,8 @@ public class TimerService extends Service {
 
     Timer timer []  ;
     ActiveUser   activeUser ;
+
+    NotificationManager mNotificationManager ;
 
     DataBase_Operation db ;
 
@@ -162,52 +166,65 @@ public class TimerService extends Service {
     }
 
     private void onFinish_notification (){
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-        mBuilder.setSmallIcon(R.mipmap.ic_logo_western);
-        mBuilder.setContentTitle("Notification Alert, Click Me!");
-        mBuilder.setOngoing(true);
-        mBuilder.setLights(Color.RED, 500, 500);
-        long[] pattern2 = {500,500,500,500,500,500,500,500,500,500,500,500,500,500,500} ;
-        // mBuilder.setSound(notification , RingtoneManager.TYPE_RINGTONE );
-        mBuilder.setContentText("Hi, This is Android Notification Detail!");
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+        Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                R.mipmap.ic_logo_western);
+        mBuilder.setLargeIcon(icon);
+        mBuilder.setSmallIcon(R.mipmap.ic_logo_western , 5);
+        mBuilder.setContentTitle("Times Up !!!!");
+        mBuilder.setOngoing(false);
+        // mBuilder.setLights(Color.RED, 1000, 1000);
+        long[] pattern2 = {500,500,500,500,500} ;
+        // Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        // mBuilder.setSound(notification , RingtoneManager.TYPE_ALARM );
+        mBuilder.setContentText("TV Number " + activeUser.Tv_Num  + "Is Finished ... !");
         mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
-        mBuilder.setCategory(NotificationCompat.CATEGORY_CALL);
+        mBuilder.setCategory(NotificationCompat.CATEGORY_ALARM);
         mBuilder.mNotification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR ;
-        mBuilder.setDefaults(NotificationCompat.DEFAULT_ALL);
-        mBuilder.setStyle(new NotificationCompat.InboxStyle());
-        mBuilder.setVibrate(pattern2);
-
-
+        // mBuilder.setDefaults(NotificationCompat.DEFAULT_ALL);
+        //mBuilder.setStyle(new NotificationCompat.InboxStyle());
+        // mBuilder.setVibrate(pattern2);
 
         RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY).setLabel("answer me ").build();
 
         //PendingIntent that restarts the current activity instance.
-        Intent resultIntent = new Intent(this, Active_User_Base.class);
-        resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(this , 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // Intent resultIntent = new Intent(this, Active_User_Base.class);
+        // resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        //PendingIntent resultPendingIntent = PendingIntent.getActivity(this , 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
-                android.R.drawable.sym_action_chat, "REPLY", resultPendingIntent)
-                .addRemoteInput(remoteInput)
-                .setAllowGeneratedReplies(true)
-                .build();
-
-
-       // mBuilder.addAction(replyAction);
+        // NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
+        //  android.R.drawable.sym_action_chat, "REPLY", resultPendingIntent)
+        // .addRemoteInput(remoteInput)
+        //.setAllowGeneratedReplies(true)
+        //  .build();
 
 
-        Intent intent = new Intent("dismissIntent");
-        intent.setAction("dismiss");
-        intent.putExtra("notificationId", 1);
+        // mBuilder.addAction(replyAction);
+
+
+
+
+        Intent intent = new Intent("Stop_User");
+        intent.putExtra("notificationId", 2);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent dismissIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent dismissIntent = PendingIntent.getBroadcast(getApplicationContext() , 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        mBuilder.addAction(R.drawable.ic_stop_black_34dp, "Stop User", dismissIntent);
+        mBuilder.setContentIntent(dismissIntent);
 
-       // mBuilder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "DISMISS", dismissIntent);
+        Intent intent2 = new Intent("Extra_Time");
+        intent2.putExtra("notificationId", 1);
+        intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent extra_time = PendingIntent.getBroadcast(getApplicationContext() , 150 , intent2 , 0);
+        mBuilder.addAction(R.drawable.ic_fast_forward_black_34dp , "Extra Time", extra_time);
 
 
-        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, mBuilder.build());
         // mNotificationManager.cancel(this.getIntent().getIntExtra("notificationId" , 1 ));
+
+        receive();
+        getApplicationContext().registerReceiver(receiver , new IntentFilter("Stop_User") );
+        getApplicationContext().registerReceiver(receiver , new IntentFilter("Extra_Time") );
     }
 
     private void receive (){
@@ -217,28 +234,52 @@ public class TimerService extends Service {
             public void onReceive(Context context, Intent intent) {
 
 
+                switch (intent.getAction()){
 
-                    for (int j = 0; j <= tag_id ; j ++  ){
-                         activeUser = new ActiveUser();
-                         activeUser = db.Search_ActiveUser(j , 0);
-                        Log.i(TAG, "onReceive: all active users  :  " + tag_id);
-                        if (activeUser == null){
+                    case "onTime_Action" :
 
-                            Log.i(TAG, "onReceive:  active user is null " + j);
+                        for (int j = 0; j <= tag_id ; j ++  ){
+                            activeUser = new ActiveUser();
+                            activeUser = db.Search_ActiveUser(j , 0);
+                            Log.i(TAG, "onReceive: all active users  :  " + tag_id);
+                            if (activeUser == null){
 
-                        }else {
-                            Log.i(TAG, "onReceive: " + activeUser.NAME + "  " + j);
-                            activeUser.Remaining_Time = (timer[j].getRemainingTime());
-                            Log.i(TAG, "onReceive: " + timer[j].getRemainingTime());
-                            db.Update_Active_User(activeUser, 0);
-                            activeUser.Elapsed_time = (timer[j].getElapsedTime()) ;
-                            db.Update_Active_User(activeUser, 1);
+                                Log.i(TAG, "onReceive:  active user is null " + j);
 
-                            Log.i(TAG, "onReceive: " +  db.Search_ActiveUser(activeUser.Username_id , 1).Remaining_Time);
+                            }else {
+                                Log.i(TAG, "onReceive: " + activeUser.NAME + "  " + j);
+                                activeUser.Remaining_Time = (timer[j].getRemainingTime());
+                                Log.i(TAG, "onReceive: " + timer[j].getRemainingTime());
+                                db.Update_Active_User(activeUser, 0);
+                                activeUser.Elapsed_time = (timer[j].getElapsedTime()) ;
+                                db.Update_Active_User(activeUser, 1);
 
-                        }
+                                Log.i(TAG, "onReceive: " +  db.Search_ActiveUser(activeUser.Username_id , 1).Remaining_Time);
 
-                    }
+                            }
+
+
+
+                        }break;
+
+
+                    case "Stop_User" :
+                        Log.i(TAG, "onReceive:  " + "stop user" );
+                        getApplicationContext().unregisterReceiver(receiver);
+                        mNotificationManager.cancel(1);
+                        break;
+
+                    case "Extra_Time" :
+                        Log.i(TAG, "onReceive: " + "extra time ");
+                        getApplicationContext().unregisterReceiver(receiver);
+                        mNotificationManager.cancel(1);
+                        break;
+
+
+                }
+
+
+
 
 
 

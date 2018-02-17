@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,14 +21,14 @@ import com.western.game.center.westerngamecenter.User_Constant.Convert;
 import com.western.game.center.westerngamecenter.User_Constant.User;
 
 
-public class Profile_dialog_fragment extends DialogFragment {
+public class Profile_dialog_fragment extends DialogFragment implements View.OnClickListener{
 
     public static final String TAG = "=====>";
 
     User user ;
 
-    de.hdodenhof.circleimageview.CircleImageView btn_done ;
-    TextView textView_name , textView_phone , textView_date , textView_totalmoney , textView_totaltime , textView_left_money ;
+    Button btn_done ;
+    TextView textView_name , textView_phone , textView_date , textView_totalmoney , textView_totaltime , textView_left_money  , textView_lastname ;
 
 
     public Profile_dialog_fragment() {
@@ -51,6 +52,7 @@ public class Profile_dialog_fragment extends DialogFragment {
         textView_totalmoney = view.findViewById(R.id.total_money_pro);
         textView_left_money = view.findViewById(R.id.left_money_pro);
         textView_totaltime = view.findViewById(R.id.play_time_pro);
+        textView_lastname = view.findViewById(R.id.last_name_pro);
     }
 
 
@@ -68,6 +70,8 @@ public class Profile_dialog_fragment extends DialogFragment {
 
         setTextView(user);
 
+        btn_done .setOnClickListener(this);
+
 
         return rootView;
     }
@@ -75,13 +79,70 @@ public class Profile_dialog_fragment extends DialogFragment {
 
     private void setTextView (User user){
 
-        textView_name.setText(user.Name + "\n" + user.LastName);
+        textView_name.setText(user.Name );
         textView_date.setText(user.Date);
-        textView_phone.setText("+98 " + user.Phone);
-        textView_left_money.setText(String.valueOf(user.LeftMoney));
-        textView_totalmoney.setText(String.valueOf(user.TotalMoney));
+        textView_phone.setText( user.Phone);
+        textView_left_money.setText(stringParserCommafy(String.valueOf(user.LeftMoney)) + " IRT");
+        textView_totalmoney.setText(stringParserCommafy(String.valueOf(user.TotalMoney)) + " IRT");
         Convert convert = new Convert( user.TotalMoney , 1 , true);
-        textView_totaltime.setText(String.valueOf(convert.result_time()));
+
+        textView_totaltime.setText(minToHour(convert.result_time()));
+        textView_lastname.setText(user.LastName);
     }
+
+    private String minToHour(long min ){
+
+        int  hour = (int) min / 60 ;
+        int  minute = (int) min % 60 ;
+
+        return  hour + " hr   " + minute  + " min" ;
+    }
+
+    private static String stringParserCommafy(String inputNum) {
+
+        String commafiedNum="";
+        Character firstChar= inputNum.charAt(0);
+
+        //If there is a positive or negative number sign,
+        //then put the number sign to the commafiedNum and remove the sign from inputNum.
+        if(firstChar=='+' || firstChar=='-')
+        {
+            commafiedNum = commafiedNum + Character.toString(firstChar);
+            inputNum=inputNum.replaceAll("[-\\+]", "");
+        }
+
+        //If the input number has decimal places,
+        //then split it into two, save the first part to inputNum
+        //and save the second part to decimalNum which will be appended to the final result at the end.
+        String [] splittedNum = inputNum.split("\\.");
+        String decimalNum="";
+        if(splittedNum.length==2)
+        {
+            inputNum=splittedNum[0];
+            decimalNum="."+splittedNum[1];
+        }
+
+        //The main logic for adding commas to the number.
+        int numLength = inputNum.length();
+        for (int i=0; i<numLength; i++) {
+            if ((numLength-i)%3 == 0 && i != 0) {
+                commafiedNum += ",";
+            }
+            commafiedNum += inputNum.charAt(i);
+        }
+
+        return commafiedNum+decimalNum;
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+    }
+
+    @Override
+    public void onClick(View view) {
+        dismiss();
+    }
+
 
 }

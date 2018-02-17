@@ -7,7 +7,7 @@ public class User {
     public int UID ; // unique
     public String Name ;
     public String LastName;
-    public long Phone ;
+    public String Phone ;
     public long TotalMoney ;
     public long LeftMoney ;
     public String Date ;

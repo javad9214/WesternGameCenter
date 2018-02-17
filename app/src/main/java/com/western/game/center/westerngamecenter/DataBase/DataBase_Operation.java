@@ -70,7 +70,7 @@ public class DataBase_Operation implements DataBase_DAO{
         switch (UpdateMode){
 
 
-            case 1 : // Password
+            case 1 : // Last Name
                 values.put(DB_Constants.UsersInfoTable.Last_Name, user.LastName);
                 break;
 
@@ -133,7 +133,7 @@ public class DataBase_Operation implements DataBase_DAO{
                     while (true) {
                         user1.UID = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USER_UID));
                         user1.LastName = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.Last_Name));
-                        user1.Phone = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
+                        user1.Phone = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
                         user1.TotalMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.ToTAL_MONEY));
                         Log.i(TAG, "Search_User: " +  cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.ToTAL_MONEY)));
                         user1.LeftMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.LEFT_MONEY));
@@ -163,7 +163,7 @@ public class DataBase_Operation implements DataBase_DAO{
                     while (true){
                         user1.UID = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USER_UID));
                         user1.LastName = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.Last_Name));
-                        user1.Phone = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
+                        user1.Phone = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
                         user1.TotalMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.ToTAL_MONEY));
                         Log.i(TAG, "Search_User: " +  cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.ToTAL_MONEY)));
                         user1.LeftMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.LEFT_MONEY));
@@ -200,7 +200,7 @@ public class DataBase_Operation implements DataBase_DAO{
         while (true) {
             user1.UID = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USER_UID));
             user1.LastName = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.Last_Name));
-            user1.Phone = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
+            user1.Phone = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
             user1.TotalMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.ToTAL_MONEY));
             user1.LeftMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.LEFT_MONEY));
             user1.Name = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.NAME));
@@ -242,7 +242,7 @@ public class DataBase_Operation implements DataBase_DAO{
                 user1 = new User();
                 user1.UID = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USER_UID));
                 user1.LastName = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.Last_Name));
-                user1.Phone = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
+                user1.Phone = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
                 user1.TotalMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.ToTAL_MONEY));
                 user1.LeftMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.LEFT_MONEY));
                 user1.Name = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.NAME));
@@ -499,7 +499,7 @@ public class DataBase_Operation implements DataBase_DAO{
                 user.LeftMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.LEFT_MONEY));
                 user.TotalMoney = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.ToTAL_MONEY));
                 user.Date = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.DATE));
-                user.Phone = cursor.getLong(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
+                user.Phone = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.PHONE));
                 user.UID = cursor.getInt(cursor.getColumnIndex(DB_Constants.UsersInfoTable.USER_UID));
                 user.LastName = cursor.getString(cursor.getColumnIndex(DB_Constants.UsersInfoTable.Last_Name));
 

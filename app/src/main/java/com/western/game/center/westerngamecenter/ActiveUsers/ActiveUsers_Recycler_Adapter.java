@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.western.game.center.westerngamecenter.App;
 import com.western.game.center.westerngamecenter.DataBase.DataBase_Operation;
+import com.western.game.center.westerngamecenter.Fragments.Main_Active_User_Fragment;
 import com.western.game.center.westerngamecenter.R;
 import com.western.game.center.westerngamecenter.Service.TimerService;
 import com.western.game.center.westerngamecenter.Time.ExampleTimer;
@@ -62,21 +63,25 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
     Recycler_viewHolder holder2 ;
 
+    ActiveUsers_Recycler_Adapter adapter ;
 
 
 
-    public ActiveUsers_Recycler_Adapter(List<ActiveUser> data , Context context  , View view1 , Activity activity ) {
+
+
+    public ActiveUsers_Recycler_Adapter(List<ActiveUser> data , Context context  , View view1 , Activity activity  , ActiveUsers_Recycler_Adapter adapter ) {
         this.dataList = data;
         this.context = context;
         this.view1 = view1;
         this.activity = activity;
+        this.adapter = adapter ;
 
     }
 
     @Override
     public Recycler_viewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view  = LayoutInflater.from(parent.getContext()).inflate(R.layout.active_user_recycler_content  , parent , false);
-        Recycler_viewHolder recyclerView_holder = new Recycler_viewHolder(view , dataList ,context , view1 , activity );
+        Recycler_viewHolder recyclerView_holder = new Recycler_viewHolder(view , dataList ,context , view1 , activity  , adapter);
 
 
         return recyclerView_holder ;
@@ -111,8 +116,6 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
 
     }
-
-
 
     private void set_tv_image ( Recycler_viewHolder  holder   , int num){
 
@@ -199,6 +202,8 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
         Activity activity ;
 
+        ActiveUsers_Recycler_Adapter adapter ;
+
         TimerService timerService ;
 
         long fa ;
@@ -207,13 +212,15 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
         boolean chorno = false ;
 
 
-        public Recycler_viewHolder(View itemView , final List<ActiveUser> list , Context context , View view , Activity activity ) {
+        public Recycler_viewHolder(View itemView , final List<ActiveUser> list , Context context , View view , Activity activity  ,  ActiveUsers_Recycler_Adapter adapter  ) {
             super(itemView);
 
             this.list = list ;
             this.context = context ;
             this.view = view ;
             this.activity = activity ;
+            this.adapter = adapter ;
+
 
             SharedPreferences sharedPreferences = activity.getSharedPreferences("ChronometerSample", MODE_PRIVATE);
 
@@ -318,9 +325,10 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
                         }
 
 
-
                     }
 
+                    Main_Active_User_Fragment main_active_user_fragment = new Main_Active_User_Fragment();
+                    main_active_user_fragment.remove(getAdapterPosition());
 
                     break;
 
