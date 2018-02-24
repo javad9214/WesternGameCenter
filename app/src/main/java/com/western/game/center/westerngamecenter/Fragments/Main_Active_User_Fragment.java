@@ -76,6 +76,8 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
 
     private static final String KEY_TEXT_REPLY = "key_text_reply";
 
+    public static final String search_frag_tag = "search_frag_tag" ;
+
     public static final String TAG = "===>" ;
 
     NotificationManager mNotificationManager ;
@@ -160,8 +162,8 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
 
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction() ;
                 fragmentTransaction.setCustomAnimations(R.anim.enter_from_right , R.anim.exit_to_left);
-                fragmentTransaction.replace(R.id.placeholder ,  new Search_User_Fragment() , "main_active_user_fragment");
-                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.placeholder ,  new Search_User_Fragment() , search_frag_tag);
+                fragmentTransaction.addToBackStack("search user");
                 fragmentTransaction.commit();
             }
 
@@ -336,8 +338,8 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
 
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction() ;
         fragmentTransaction.setCustomAnimations(R.anim.enter_from_right , R.anim.exit_to_left);
-        fragmentTransaction.replace(R.id.placeholder , new Search_User_Fragment(), "search_user_fragment");
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.placeholder , new Search_User_Fragment(), search_frag_tag);
+        fragmentTransaction.addToBackStack("search user");
         fragmentTransaction.commit();
     }
 
@@ -475,6 +477,7 @@ public class Main_Active_User_Fragment extends Fragment implements  View.OnClick
          list.remove(position);
          adapter.notifyItemRemoved(position);
     }
+
 
 
 

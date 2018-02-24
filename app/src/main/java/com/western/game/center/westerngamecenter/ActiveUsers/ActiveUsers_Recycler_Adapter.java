@@ -35,10 +35,12 @@ import android.widget.Toast;
 import com.western.game.center.westerngamecenter.App;
 import com.western.game.center.westerngamecenter.DataBase.DataBase_Operation;
 import com.western.game.center.westerngamecenter.Fragments.Main_Active_User_Fragment;
+import com.western.game.center.westerngamecenter.Fragments.User_Activities.Add_New_User.Search_User.Active_dialog_fragment.Custom_dialog;
 import com.western.game.center.westerngamecenter.R;
 import com.western.game.center.westerngamecenter.Service.TimerService;
 import com.western.game.center.westerngamecenter.Time.ExampleTimer;
 import com.western.game.center.westerngamecenter.Time.Timer;
+import com.western.game.center.westerngamecenter.Tools.CountUpTimer;
 import com.western.game.center.westerngamecenter.User_Constant.ActiveUser;
 
 import java.util.List;
@@ -88,9 +90,8 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
     }
 
     @Override
-    public void onBindViewHolder(Recycler_viewHolder holder, int position) {
+    public void onBindViewHolder(Recycler_viewHolder holder, final int position) {
 
-        this.position = position ;
         Recycler_viewHolder  holder1 = (Recycler_viewHolder) holder ;
         holder2 = holder1 ;
         activeUser = dataList.get(position);
@@ -101,6 +102,15 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
         holder1.tx_leftTime.setText(String.valueOf((long) activeUser.Remaining_Time /1000));
         set_tv_image(holder1 , activeUser.Tv_Num);
 
+
+        holder1.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                onDelete(position);
+            }
+        });
 
         if (activeUser.isRunning){
 
@@ -159,15 +169,67 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
         }
     }
 
-    public void delete(int position , ActiveUsers_Recycler_Adapter adapter){
-        dataList.remove(position);
-        adapter.notifyItemRemoved(position);
-        adapter.notifyItemRangeChanged(position , dataList.size());
-    }
-
     @Override
     public int getItemCount() {
         return dataList.size() ;
+    }
+
+    public void  onDelete(final int pos){
+
+        if (holder2.start_flag){
+            AlertDialog.Builder  builder = new AlertDialog.Builder(context);
+            builder.setTitle("Warning");
+            builder.setMessage(  "Are you Sure To Stop And Delete This User ??");
+            builder.setNegativeButton("Cancel" , null);
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    DataBase_Operation db = App.getDataBaseOperation();
+                    dataList.get(pos).isRunning = false ;
+                    db.Update_Active_User(dataList.get(pos) , 2);
+                    db.Delete_ActiveUser(dataList.get(pos));
+                    if (db.Show_Active_user().size() == 0){
+                        Intent service = new Intent(context , TimerService.class);
+                        context.stopService(service);
+                    }
+
+                    holder2. mySnackbar.setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(context, "undo ", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    holder2. mySnackbar.show();
+                }
+            });
+
+            dataList.remove(pos);
+            notifyItemRemoved(pos);
+            builder.show();
+        }else {
+
+            holder2. mySnackbar.setAction("Undo", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "undo ", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            DataBase_Operation db = App.getDataBaseOperation();
+            dataList.get(pos).isRunning = false ;
+            db.Update_Active_User(dataList.get(pos) , 2);
+            db.Delete_ActiveUser(dataList.get(pos));
+            if (db.Show_Active_user().size() == 0){
+                Intent service = new Intent(context , TimerService.class);
+                context.stopService(service);
+            }
+            dataList.remove(pos);
+            notifyItemRemoved(pos);
+            holder2. mySnackbar.show();
+
+
+
+        }
     }
 
 
@@ -180,6 +242,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
         ImageView delete  , tv_num_activated ;
 
         ChronometerPersist chronometerPersist ;
+        CountUpTimer countUpTimer ;
 
         View view ;
 
@@ -210,6 +273,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
         boolean flag_dropdown = false  , start_flag = false  , pause_flag = false   , resume_flag = false , stop_flag = false   , pause_new_flag = false ;
         boolean chorno = false ;
+
 
 
         public Recycler_viewHolder(View itemView , final List<ActiveUser> list , Context context , View view , Activity activity  ,  ActiveUsers_Recycler_Adapter adapter  ) {
@@ -243,6 +307,16 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
             chronometerPersist.resumeState();
 
+            countUpTimer = new CountUpTimer(1000) {
+                @Override
+                public void onTick(long elapsedTime) {
+                    Log.i(TAG, "onTick: " + elapsedTime);
+                }
+            };
+
+            countUpTimer.start();
+
+
             tv_num_activated = itemView.findViewById(R.id.tv_num_activated);
 
             progressBar = (ProgressBar) itemView.findViewById(R.id.active_user_progressBar);
@@ -260,14 +334,14 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
             stop.setOnClickListener(this);
             start_pause.setOnClickListener(this);
-            delete.setOnClickListener(this);
+
+
 
 
 
 
 
         }
-
 
 
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -278,57 +352,6 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
             switch (v.getId()) {
 
                 case R.id.btn_delete_active_user :
-
-                    if (start_flag){
-                        AlertDialog.Builder  builder = new AlertDialog.Builder(context);
-                        builder.setTitle("Warning");
-                        builder.setMessage(  "Are you Sure To Stop And Delete This User ??");
-                        builder.setNegativeButton("Cancel" , null);
-                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                DataBase_Operation db = App.getDataBaseOperation();
-                                list.get(getLayoutPosition()).isRunning = false ;
-                                db.Update_Active_User(list.get(getLayoutPosition()) , 2);
-                                db.Delete_ActiveUser(list.get(getLayoutPosition()));
-                                if (db.Show_Active_user().size() == 0){
-                                    Intent service = new Intent(context , TimerService.class);
-                                    context.stopService(service);
-                                }
-
-                                mySnackbar.setAction("Undo", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Toast.makeText(context, "undo ", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                mySnackbar.show();
-                            }
-                        });
-                        builder.show();
-                    }else {
-
-                        mySnackbar.setAction("Undo", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(context, "undo ", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        mySnackbar.show();
-                        DataBase_Operation db = App.getDataBaseOperation();
-                        list.get(getLayoutPosition()).isRunning = false ;
-                        db.Update_Active_User(list.get(getLayoutPosition()) , 2);
-                        db.Delete_ActiveUser(list.get(getLayoutPosition()));
-                        if (db.Show_Active_user().size() == 0){
-                            Intent service = new Intent(context , TimerService.class);
-                            context.stopService(service);
-                        }
-
-
-                    }
-
-                    Main_Active_User_Fragment main_active_user_fragment = new Main_Active_User_Fragment();
-                    main_active_user_fragment.remove(getAdapterPosition());
 
                     break;
 
@@ -357,9 +380,9 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
                         pause();
 
                     }else if (stop_flag){
-                        Log.i(TAG, "onClick:  stop flag ");
 
-                        Log.i(TAG, "onClick:  stop");
+
+
 
                     } else if (pause_new_flag){
 
@@ -533,8 +556,6 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
             Intent service = new Intent(context , TimerService.class);
             service.putExtra("mode" , 1) ;
-            Log.i(TAG, "pause: " + list.get(getLayoutPosition()).Tag_Num);
-            Log.i(TAG, "pause: " + list.get(getLayoutPosition()).NAME);
             service.putExtra("id" , list.get(getLayoutPosition()).Username_id) ;
             context.startService(service);
 
@@ -563,6 +584,7 @@ public class ActiveUsers_Recycler_Adapter extends RecyclerView.Adapter<ActiveUse
 
 
     }
+
 
 
 

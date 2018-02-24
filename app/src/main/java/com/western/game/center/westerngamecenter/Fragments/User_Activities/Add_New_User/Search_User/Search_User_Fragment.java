@@ -27,6 +27,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -70,8 +71,6 @@ public class Search_User_Fragment extends Fragment {
 
     Intent intent ;
 
-    int selectedUser = 0 ; // number of selected user when long clicked ...
-
     int positionUser = 0 ; // position of user that long clicked ...
 
     ImageView  imageView_selected_user ;
@@ -84,18 +83,14 @@ public class Search_User_Fragment extends Fragment {
 
     View view ;
 
-    TextView textView_Selected_User ;
-
     boolean isLongClicked = false ;
-
-    List<Integer> position_list ;
-    List<Integer> User_id_list ;
+    boolean isSearchList = false ; // when list is show content of searching on search bar ...
 
     public static final String TAG2  = "===/===";
 
     RecyclerView recyclerView ;
 
-    ArrayList<User> userArrayList;
+    List<User> userArrayList;
 
     public static final String TAG = "===>" ;
 
@@ -126,7 +121,6 @@ public class Search_User_Fragment extends Fragment {
         init(view);
 
 
-        position_list = new ArrayList<>() ;
         this.view = view ;
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -136,6 +130,7 @@ public class Search_User_Fragment extends Fragment {
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(s);
 
+        userArrayList = new ArrayList<>();
 
         view1.setOnTouchListener(new OnSwipeTouchListener(getContext()){
 
@@ -176,8 +171,9 @@ public class Search_User_Fragment extends Fragment {
     private void show_all_users(){
 
         text_no_results.setVisibility(View.INVISIBLE);
+        userArrayList.clear();
         userArrayList = db.show_user();
-
+        isSearchList = false ;
 
         if (!userArrayList.get(0).NullFlag) {
             linearLayout_empty_search_page.setVisibility(View.INVISIBLE);
@@ -231,31 +227,14 @@ public class Search_User_Fragment extends Fragment {
                         }
                     }else {
                         imageView_selected_user = (ImageView) view.findViewById(R.id.image_contact);
-                        boolean isActive = false ;
-                        for (int i = 0 ; i < position_list.size() ; i++){
-                            if (position_list.get(i) == position){
-                                isActive = true ;
-                                if (selectedUser == 1){
-                                    imageView_selected_user.setImageResource(R.mipmap.ic_logo_western);
-                                    textView_Selected_User.setText(String.valueOf(selectedUser));
-                                    position_list.clear();
-                                    isLongClicked = false ;
-                                    change_toolbar(false);
-                                }else {
-                                    selectedUser -- ;
-                                    imageView_selected_user.setImageResource(R.mipmap.ic_logo_western);
-                                    textView_Selected_User.setText(String.valueOf(selectedUser));
-                                    position_list.remove(i);
-                                }
-                            }
-                        }
-                        if (!isActive){
-                            selectedUser ++ ;
-                            position_list.add(position);
-                            imageView_selected_user.setImageResource(R.drawable.ic_done_black_50dp);
-                            textView_Selected_User.setText(String.valueOf(selectedUser));
-                        }
 
+
+                            if (positionUser == position){
+
+                                    imageView_selected_user.setImageResource(R.mipmap.ic_logo_western);
+                                    isLongClicked = false;
+                                    change_toolbar(false);
+                            }
 
                     }
 
@@ -264,8 +243,8 @@ public class Search_User_Fragment extends Fragment {
                 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                 @Override
                 public void onLongItemClick(View view, int position) {
-                    selectedUser = 1 ;
-                    position_list.add(position);
+
+                    positionUser = position ;
                     isLongClicked = true ;
                     change_toolbar(true);
                     Log.i(TAG, "onLongItemClick: ");
@@ -344,7 +323,6 @@ public class Search_User_Fragment extends Fragment {
 
 
 
-
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                @Override
                public boolean onQueryTextSubmit(String query) {
@@ -368,6 +346,7 @@ public class Search_User_Fragment extends Fragment {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -377,11 +356,6 @@ public class Search_User_Fragment extends Fragment {
 
 
         switch (id){
-
-            case R.id.action_settings :
-                Toast.makeText(getContext(), "western game center", Toast.LENGTH_SHORT).show();
-                return true;
-
 
             case android.R.id.home :
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction() ;
@@ -393,42 +367,34 @@ public class Search_User_Fragment extends Fragment {
                 return true ;
 
             case R.id.action_user_profile :
-                if (position_list.size() == 1){
 
                     FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                     transaction.addToBackStack(null);
-                    Profile_dialog_fragment profile_dialog_fragment = Profile_dialog_fragment.newInstance(userArrayList.get( position_list.get(0)).UID);
+                    Profile_dialog_fragment profile_dialog_fragment = Profile_dialog_fragment.newInstance(userArrayList.get( positionUser).UID);
                     profile_dialog_fragment.show(transaction, "dialog");
-                }
+
                 break;
 
 
             case R.id.action_delete :
 
-
-
-                    for (int i = 0 ; i < position_list.size() ; i++){
-                         userArrayList.remove(position_list.get(i));
-                         adapter.notifyItemRemoved(position_list.get(i));
-                        db.Delete_User(userArrayList.get(position_list.get(i)));
-                    }
-
-//                    userArrayList.remove(position_list.get(0));
-//                    adapter.notifyItemRemoved(position_list.get(0));
-
-
+                db.Delete_User(userArrayList.get(positionUser));
+                userArrayList.remove(positionUser);
+                adapter.notifyItemRemoved(positionUser);
+                imageView_selected_user.setImageResource(R.mipmap.ic_logo_western);
+                isLongClicked = false;
+                change_toolbar(false);
 
                 break;
 
             case R.id.action_edit :
 
-                if (position_list.size() == 1){
 
-                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    transaction.addToBackStack(null);
-                    EditFragment editFragment = EditFragment.newInstance(userArrayList.get( position_list.get(0)).UID);
-                    editFragment.show(transaction, "dialog");
-                }
+                    FragmentTransaction transaction2 = getActivity().getSupportFragmentManager().beginTransaction();
+                    transaction2.addToBackStack(null);
+                    EditFragment editFragment = EditFragment.newInstance(userArrayList.get( positionUser).UID);
+                    editFragment.show(transaction2, "dialog");
+
 
                 break;
         }
@@ -458,14 +424,12 @@ public class Search_User_Fragment extends Fragment {
                 }
             }
             getActivity(). invalidateOptionsMenu();
-            textView_Selected_User = (TextView) view.findViewById(R.id.text_selected_user_num);
             imageView_close_toolbar = (ImageView) view.findViewById(R.id.image_close_toolbar);
             imageView_close_toolbar.setOnClickListener(new View.OnClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                 @Override
                 public void onClick(View view) {
                     isLongClicked = false ;
-                    position_list.clear();
                     recyclerView.invalidate();
                     recyclerView.removeOnItemTouchListener(onItemTouchListener_all);
                     recyclerView.removeOnItemTouchListener(onItemTouchListener_custom);
@@ -513,6 +477,9 @@ public class Search_User_Fragment extends Fragment {
 
     private void display_search_result (final List<User> list){
 
+        isSearchList = true ;
+        userArrayList.clear();
+        userArrayList = list ;
         text_no_results.setVisibility(View.INVISIBLE);
         recyclerView.invalidate();
         adapter = new SearchingView_Adapter(list , getContext(), getActivity());
@@ -525,22 +492,40 @@ public class Search_User_Fragment extends Fragment {
         linearLayoutManager.setSmoothScrollbarEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         onItemTouchListener_custom =  new RecyclerItemClickListener(getContext() , recyclerView , new RecyclerItemClickListener.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onItemClick(View view, int position) {
 
-                if (db.Search_ActiveUser(list.get(position).UID , 1) != null){
-                    AlertDialog.Builder  builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle("This User has Already Activated ...");
-                    builder.setMessage("You Cant Active a User More than One times ...");
-                    builder.setPositiveButton("OK" , null);
-                    builder.show();
+                if (!isLongClicked){
+                    if (db.Search_ActiveUser(db.show_user().get(position).UID , 1) != null){
 
+
+                        AlertDialog.Builder  builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("User was Activated ...");
+                        builder.setMessage("You Cant Active a User More than One times ...");
+                        builder.setPositiveButton("OK" , null);
+                        builder.show();
+
+
+                    }else {
+                        CardView imageView  = view.findViewById(R.id.card_transition);
+                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        transaction.addToBackStack(null);
+                        transaction.addSharedElement(imageView , "transition_photo");
+                        Custom_dialog custom_dialog = Custom_dialog.newInstance(userArrayList.get(position).UID);
+                        custom_dialog.show(transaction, "dialog");
+                    }
                 }else {
+                    imageView_selected_user = (ImageView) view.findViewById(R.id.image_contact);
 
-                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    transaction.addToBackStack(null);
-                    Custom_dialog custom_dialog = Custom_dialog.newInstance(list.get(position).UID);
-                    custom_dialog.show(transaction, "dialog");
+
+                    if (positionUser == position){
+
+                        imageView_selected_user.setImageResource(R.mipmap.ic_logo_western);
+                        isLongClicked = false;
+                        change_toolbar(false);
+                    }
+
                 }
             }
 
@@ -548,7 +533,11 @@ public class Search_User_Fragment extends Fragment {
             @Override
             public void onLongItemClick(View view, int position) {
 
+                positionUser = position ;
+                isLongClicked = true ;
                 change_toolbar(true);
+                imageView_selected_user = (ImageView) view.findViewById(R.id.image_contact);
+                imageView_selected_user.setImageResource(R.drawable.ic_done_black_50dp);
             }
         }) ;
 
@@ -556,6 +545,7 @@ public class Search_User_Fragment extends Fragment {
 
 
     }
+
 
 
 }

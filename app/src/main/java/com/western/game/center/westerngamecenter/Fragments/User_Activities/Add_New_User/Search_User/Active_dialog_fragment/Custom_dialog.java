@@ -563,8 +563,7 @@ public class Custom_dialog extends DialogFragment implements View.OnClickListene
 
         activeUser  = new ActiveUser();
 
-        //activeUser.Remaining_Time = time1 *60 * 1000 ;
-        activeUser.Remaining_Time = 10 * 1000 ;
+        activeUser.Remaining_Time = time1 *60 * 1000 ;
         Calendar calendar = Calendar.getInstance();
         activeUser.startTime = String.valueOf(calendar.get(calendar.HOUR_OF_DAY)) + " : " +
                 String.valueOf(calendar.get(calendar.MINUTE));

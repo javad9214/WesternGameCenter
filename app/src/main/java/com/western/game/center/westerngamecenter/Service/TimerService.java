@@ -60,7 +60,7 @@ public class TimerService extends Service {
         tag_id = -1 ;
         db = App.getDataBaseOperation();
 
-        Log.i(TAG, "onCreate: service");
+
         receive();
 
     }
@@ -108,7 +108,6 @@ public class TimerService extends Service {
 
     private void start_new_active (final ActiveUser activeUser){
 
-        Log.i(TAG, "start_new_active: ");
         tag_id++ ;
 
         if (activeUser == null) {
@@ -139,7 +138,8 @@ public class TimerService extends Service {
                     //Log.i(TAG, "onFinish: " );
                     activeUser.isRunning = false ;
                     db.Update_Active_User(activeUser , 2);
-                    onFinish_notification();
+                    onExtraTimeStart(activeUser);
+                    onFinish_notification(activeUser);
 
                 }
             };
@@ -165,7 +165,7 @@ public class TimerService extends Service {
         timer[tagId].resume();
     }
 
-    private void onFinish_notification (){
+    private void onFinish_notification (ActiveUser activeUser2){
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
         Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
                 R.mipmap.ic_logo_western);
@@ -177,7 +177,7 @@ public class TimerService extends Service {
         long[] pattern2 = {500,500,500,500,500} ;
         // Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         // mBuilder.setSound(notification , RingtoneManager.TYPE_ALARM );
-        mBuilder.setContentText("TV Number " + activeUser.Tv_Num  + "Is Finished ... !");
+        mBuilder.setContentText("TV Number " + activeUser2.Tv_Num  + "Is Finished ... !");
         mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
         mBuilder.setCategory(NotificationCompat.CATEGORY_ALARM);
         mBuilder.mNotification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR ;
@@ -225,6 +225,13 @@ public class TimerService extends Service {
         receive();
         getApplicationContext().registerReceiver(receiver , new IntentFilter("Stop_User") );
         getApplicationContext().registerReceiver(receiver , new IntentFilter("Extra_Time") );
+    }
+
+    private void onExtraTimeStart (ActiveUser activeUser1){
+        Intent service = new Intent( this , StopWatchService.class);
+        service.putExtra("id" , activeUser1.Username_id) ;
+        service.putExtra("mode" , 0 ) ;
+        startService(service);
     }
 
     private void receive (){
